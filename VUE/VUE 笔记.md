@@ -1,5 +1,78 @@
-## 1、组件
-### 1.1、动态组件
+## 1、实例生命周期钩子
+
+简单理解，生命周期钩子函数就是vue实例在某一个时间点会自动执行的函数。
+
+> ```vue
+> <div id="app">{{msg}}</div>
+> 
+> <script src="https://cdn.bootcss.com/vue/2.4.2/vue.js"></script>
+> <script>
+>   var vm = new Vue({
+>     el: '#app',
+>     data: {
+>       msg: 'Vue的生命周期'
+>     },
+>     beforeCreate: function() {
+>       console.group('------beforeCreate创建前状态------');
+>       console.log("el     : " + this.$el); //undefined
+>       console.log("data   : " + this.$data); //undefined
+>       console.log("msg: " + this.msg) //undefined
+>     },
+>     created: function() {
+>       console.group('------created创建完毕状态------');
+>       console.log("el     : " + this.$el); //undefined
+>       console.log("data   : " + this.$data); //已被初始化
+>       console.log("msg: " + this.msg); //已被初始化
+>     },
+>     beforeMount: function() {
+>       console.group('------beforeMount挂载前状态------');
+>       console.log(this.$el);// <div id="app">{{msg}}</div> 挂载前状态
+>     },
+>     mounted: function() {
+>       console.group('------mounted 挂载结束状态------');
+>       console.log(this.$el);// <div id="app">Vue的生命周期</div>   msg内容被挂载并渲染到页面
+>     },
+>       // 当data被修改之前
+>     beforeUpdate: function () {
+>       console.group('beforeUpdate 更新前状态===============》');
+>       console.log("el     : " + this.$el);
+>       console.log(this.$el);
+>       console.log("data   : " + this.$data);
+>       console.log("msg: " + this.msg);
+>     },
+>       // 触发beforeUpdate之后，虚拟DOM重新渲染并应用更新
+>       // 当data被修改之后
+>     updated: function () {
+>       console.group('updated 更新完成状态===============》');
+>       console.log("el     : " + this.$el);
+>       console.log(this.$el);
+>       console.log("data   : " + this.$data);
+>       console.log("msg: " + this.msg);
+>     },
+>       // 调用vm.$destroy() 销毁前
+>     beforeDestroy: function () {
+>       console.group('beforeDestroy 销毁前状态===============》');
+>       console.log("el     : " + this.$el);
+>       console.log(this.$el);
+>       console.log("data   : " + this.$data);
+>       console.log("msg: " + this.msg);
+>     },
+>        // 调用vm.$destroy() 销毁后
+>     destroyed: function () {
+>       console.group('destroyed 销毁完成状态===============》');
+>       console.log("el     : " + this.$el);
+>       console.log(this.$el);
+>       console.log("data   : " + this.$data);
+>       console.log("msg: " + this.msg)
+>     }
+>   })
+> </script>
+> ```
+
+## 2、组件
+
+### 2.1、动态组件
+
 > ```vue
 > <div id="root">
 > 	<component :is="type"></component> <!--其效果如同下面两行被注释的代码-->
@@ -31,7 +104,7 @@
 > 
 >上面代码中，点击按钮在两个组件间切换，可使用`<component>`标签并绑定`:is`为动态组件名。
 
-### 1.2、v-once 指令
+### 2.2、v-once 指令
 
 > 只渲染元素和组件**一次**。随后的重新渲染，元素/组件及其所有的子节点将被视为静态内容并跳过。这可以用于优化更新性能。
 >
@@ -51,7 +124,7 @@
 > </ul>
 > ```
 
-### 1.3、vue父子组件的生命周期顺序
+### 2.3、vue父子组件的生命周期顺序
 
 > #### 加载渲染过程
 >
@@ -79,7 +152,7 @@
 > 父beforeDestroy -> 子beforeDestroy -> 子destroyed -> 父destroyed
 > ```
 
-### 1.4、Prop 验证
+### 2.4、Prop 验证
 
 > 子组件对父组件传递来的参数进行校验
 >
@@ -119,7 +192,7 @@
 > })
 > ```
 
-### 1.5、父组件调用子组件方法并传入值
+### 2.5、父组件调用子组件方法并传入值
 
 > 通过`ref`引用调用子组件内的方法并传入参数
 >
