@@ -1,0 +1,196 @@
+## 1、安装
+
+### 1.1、Linux上安装Django
+
+#### 安装 setuptools
+
+```python
+# Python3 安装
+yum install python3-setuptools
+# Python2 安装
+yum install python2-setuptools
+```
+
+使用 easy_install 命令安装 django
+
+```python
+easy_install django
+```
+
+在 Python 解释器输入以下代码:
+
+```python
+[root@solar django]# python
+Python 3.7.4 (default, May 15 2014, 14:49:08)
+[GCC 4.8.0] on linux2
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import django
+>>> django.VERSION
+(3, 0, 6, 'final', 0)
+```
+
+看到输出了Django的版本号，说明安装成功。
+
+#### pip 命令安装方法
+
+```python
+sudo pip3 install Django -i https://pypi.tuna.tsinghua.edu.cn/simple
+```
+
+``-i https://pypi.tuna.tsinghua.edu.cn/simple`` 指定清华镜像源，下载速度更快。
+
+指定 Django 的下载版本（3.0.6 可以改成你要的版本）：
+
+```python
+sudo pip3 install Django==3.0.6 -i https://pypi.tuna.tsinghua.edu.cn/simple
+```
+
+如果 pip < 1.4，安装方法如下：
+
+```python
+pip install https://www.djangoproject.com/download/1.11a1/tarball/
+```
+
+## 2、创建第一个项目
+
+### 2.1、HelloWorld
+
+使用 django-admin 来创建 HelloWorld 项目：
+
+```python
+django-admin startproject HelloWorld
+```
+
+创建完成后我们可以查看下项目的目录结构：
+
+```json
+$ cd HelloWorld/
+$ tree
+.
+|-- HelloWorld
+|   |-- __init__.py
+|   |-- asgi.py
+|   |-- settings.py
+|   |-- urls.py
+|   `-- wsgi.py
+`-- manage.py
+```
+
+目录说明：
+
+- **HelloWorld:** 项目的容器。
+- **manage.py:** 一个实用的命令行工具，可让你以各种方式与该 Django 项目进行交互。
+- **HelloWorld/__init__.py:** 一个空文件，告诉 Python 该目录是一个 Python 包。
+- **HelloWorld/asgi.py:** 一个 ASGI 兼容的 Web 服务器的入口，以便运行你的项目。
+- **HelloWorld/settings.py:** 该 Django 项目的设置/配置。
+- **HelloWorld/urls.py:** 该 Django 项目的 URL 声明; 一份由 Django 驱动的网站"目录"。
+- **HelloWorld/wsgi.py:** 一个 WSGI 兼容的 Web 服务器的入口，以便运行你的项目。
+
+接下来我们进入 HelloWorld 目录输入以下命令，启动服务器：
+
+```json
+python3 manage.py runserver 0.0.0.0:8000
+```
+
+0.0.0.0 让其它电脑可连接到开发服务器，8000 为端口号。如果不说明，那么端口号默认为 8000。
+
+在浏览器输入你服务器的 ip（这里我们输入本机 IP 地址： **127.0.0.1:8000**） 及端口号，如果正常启动，输出结果如下：
+
+![img](https://www.runoob.com/wp-content/uploads/2015/01/225A52EA-25EF-4BF1-AA5A-B91490CBF26D.jpg)
+
+### 2.1、视图和 URL 配置
+
+在先前创建的 HelloWorld 目录下的 HelloWorld 目录新建一个 views.py 文件，并输入代码：
+
+``HelloWorld/HelloWorld/views.py 文件代码：``
+
+```python
+from django.http import HttpResponse
+ 
+def hello(request):
+    return HttpResponse("Hello world ! ")
+```
+
+接着，绑定 URL 与视图函数。打开 urls.py 文件，删除原来代码，将以下代码复制粘贴到 urls.py 文件中：
+
+``HelloWorld/HelloWorld/urls.py 文件代码：``
+
+```python
+from django.conf.urls import url
+ 
+from . import views
+ 
+urlpatterns = [
+    url(r'^$', views.hello),
+]
+```
+
+整个目录结构如下：
+
+```json
+$ tree
+.
+|-- HelloWorld
+|   |-- __init__.py
+|   |-- __init__.pyc
+|   |-- settings.py
+|   |-- settings.pyc
+|   |-- urls.py              # url 配置
+|   |-- urls.pyc
+|   |-- views.py              # 添加的视图文件
+|   |-- views.pyc             # 编译后的视图文件
+|   |-- wsgi.py
+|   `-- wsgi.pyc
+`-- manage.py
+```
+
+完成后，启动 Django 开发服务器，并在浏览器访问打开浏览器并访问：
+
+![img](https://www.runoob.com/wp-content/uploads/2015/01/BD259D4C-2DBE-4657-8761-D8C3508E8A94.jpg)
+
+我们也可以修改以下规则：
+
+``HelloWorld/HelloWorld/urls.py 文件代码：``
+
+```python
+from django.urls import path
+ 
+from . import views
+ 
+urlpatterns = [
+    path('hello/', views.hello),
+]
+```
+
+通过浏览器打开 **http://127.0.0.1:8000/hello**，输出结果如下：
+
+![img](https://www.runoob.com/wp-content/uploads/2015/01/344A94C7-8D7D-4A69-9963-00D28A69CD56.jpg)
+
+### 2.3、path() 函数
+
+Django path() 可以接收四个参数，分别是两个必选参数：route、view 和两个可选参数：kwargs、name。
+
+语法格式：
+
+```python
+path(route, view, kwargs=None, name=None)
+```
+
+- route: 字符串，表示 URL 规则，与之匹配的 URL 会执行对应的第二个参数 view。
+- view: 用于执行与正则表达式匹配的 URL 请求。
+- kwargs: 视图使用的字典类型的参数。
+- name: 用来反向获取 URL。
+
+Django2. 0中可以使用 re_path() 方法来兼容 1.x 版本中的 **url()** 方法，一些正则表达式的规则也可以通过 re_path() 来实现 。
+
+```python
+from django.urls import include, re_path
+
+urlpatterns = [
+    re_path(r'^index/$', views.index, name='index'),
+    re_path(r'^bio/(?P<username>\w+)/$', views.bio, name='bio'),
+    re_path(r'^weblog/', include('blog.urls')),
+    ...
+]
+```
+
