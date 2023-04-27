@@ -89,7 +89,7 @@ $ tree
 接下来我们进入 HelloWorld 目录输入以下命令，启动服务器：
 
 ```json
-python3 manage.py runserver 0.0.0.0:8000
+python manage.py runserver 0.0.0.0:8000
 ```
 
 0.0.0.0 让其它电脑可连接到开发服务器，8000 为端口号。如果不说明，那么端口号默认为 8000。
@@ -133,15 +133,15 @@ $ tree
 |-- HelloWorld
 |   |-- __init__.py
 |   |-- __init__.pyc
-|   |-- settings.py
+|   |-- settings.py           # 项目配置
 |   |-- settings.pyc
-|   |-- urls.py              # url 配置
+|   |-- urls.py               # URL和函数的对应关系
 |   |-- urls.pyc
 |   |-- views.py              # 添加的视图文件
 |   |-- views.pyc             # 编译后的视图文件
-|   |-- wsgi.py
+|   |-- wsgi.py               # 接收网络请求
 |   `-- wsgi.pyc
-`-- manage.py
+`-- manage.py                 # 项目的管理,启动项目、创建app、数据管理
 ```
 
 完成后，启动 Django 开发服务器，并在浏览器访问打开浏览器并访问：
@@ -211,4 +211,87 @@ urlpatterns = [
 #### 2.4.3 启动项目
 
 ![doc-image-20230427093526852](https://cdn.staticaly.com/gh/Sherlock-Homles/gallery@main/20230427/doc-image-20230427093526852.2t8d6pnmyfi0.png)
+
+### 2.5、创建APP
+
+```json
+|-- 项目
+|   |-- app, 用户管理【表结构、函数、HTML模板、CSS】
+|   |-- app, 网站【表结构、函数、HTML模板、CSS】
+|   |-- app, API【表结构、函数、HTML模板、CSS】
+|   ..
+```
+
+#### 2.5.1、创建一个user应用：
+
+```json
+(Django) D:\Python\PyCharmProject\FirstProject>python manage.py startapp user 
+```
+
+```json
+# APP目录结构
+─user
+    │  admin.py        # 固定不动，Django默认提供了admin后台管理
+    │  apps.py         # 固定不动，app启动类
+    │  models.py       # 重要，对数据库操作
+    │  tests.py        # 固定不动，单元测试
+    │  views.py        # 重要，函数
+    │  __init__.py
+    │
+    └─migrations       # 固定不动，数据库变更记录
+            __init__.py
+```
+
+#### 2.5.2、注册app：
+
+``settings.py``
+
+```python
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'user.apps.UserConfig'
+]
+```
+
+#### 2.5.3、编写URL和视图函数对应关系：
+
+``urls.py``
+
+```python
+from user import views
+
+urlpatterns = [
+    # www.xxx.com/index/ -> 函数
+    path('index/', views.index),
+]
+```
+
+#### 2.5.4、编写视图函数
+
+``views.py``
+
+```python
+from django.shortcuts import render, HttpResponse
+
+# Create your views here.
+def index(request):
+    return HttpResponse("Wellcome")
+```
+
+#### 2.5.5、访问
+
+``http://127.0.0.1:8000/index/``
+
+![doc-image](https://cdn.staticaly.com/gh/Sherlock-Homles/gallery@main/20230427/doc-image.1dmxvy0n0fls.webp)
+
+#### 2.5.6、命令行启动Django
+
+```json
+python manage.py runserver
+```
 
