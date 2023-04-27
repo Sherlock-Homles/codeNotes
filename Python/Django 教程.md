@@ -194,3 +194,22 @@ urlpatterns = [
 ]
 ```
 
+### 2.4、使用PyCharm创建Django项目
+
+#### 2.4.1 安装Anaconda创建Django虚拟环境
+
+
+
+![image-20230427093128661](C:\Users\竹川夏目\AppData\Roaming\Typora\typora-user-images\image-20230427093128661.png)
+
+#### 2.4.1、PyCharm添加Python解释器
+
+![image-20230427093254950](C:\Users\竹川夏目\AppData\Roaming\Typora\typora-user-images\image-20230427093254950.png)
+
+#### 2.4.2、创建Django项目
+
+![image-20230427093419300](C:\Users\竹川夏目\AppData\Roaming\Typora\typora-user-images\image-20230427093419300.png)
+
+#### 2.4.3 启动项目
+
+![image-20230427093526852](C:\Users\竹川夏目\AppData\Roaming\Typora\typora-user-images\image-20230427093526852.png)
