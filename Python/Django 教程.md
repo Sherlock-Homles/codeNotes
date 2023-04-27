@@ -339,7 +339,7 @@ def user_list(request):
     │  └─plugins
 ```
 
-html文件引入静态文件
+HTML文件引入静态文件
 
 ```html
 {% load static %}
@@ -378,4 +378,80 @@ html文件引入静态文件
     }
 </style>
 ```
+
+### 2.8、模板语法
+
+本质上：在HTML中写一些占位符，由数据对这些占位符进行替换和处理。
+
+``views.py``
+
+```python
+def user_list(request):
+    title = "标题1"
+    data = ["001", "002", "003"]
+    device = {"code": "001", "name": "设备1", "status": "在线"}
+    device_list = [
+        {"code": "001", "name": "设备1", "status": "在线"},
+        {"code": "002", "name": "设备2", "status": "离线"},
+        {"code": "003", "name": "设备3", "status": "在线"},
+    ]
+    return render(request, 'user_list.html',
+                  {"title": title, 'data': data, "device": device, "device_list": device_list})
+```
+
+``user_list.html``
+
+```html
+    <div>{{ title }}</div>
+    {# for循环 #}
+    <div>
+        {% for item in data %}
+            <li>{{ item }}</li>
+        {% endfor %}
+    </div>
+    <div>
+        {% for key, vlaue in device.items %}
+            <li>{{ key }} = {{ vlaue }}</li>
+        {% endfor %}
+    </div>
+    <div>
+        {% for item in device_list %}
+        <li>{{ item.name }}  {{ item.status }}</li>
+        {% endfor %}
+    </div>
+    {# if语句 #}
+    <div>
+        {% if title == "标题1" %}
+            <h1>TRUE</h1>
+        {% else %}
+            <h1>FALSE</h1>
+        {% endif %}
+    </div>
+```
+
+发送请求获取数据：
+
+``views.py``
+
+```python
+def news(request):
+    # 第三方模块：request（请求）
+    import requests
+    response = requests.get("https://www.zhihu.com/api/v3/feed/topstory/hot-lists/total?limit=50&desktop=true")
+    news_list = response.json()
+    return render(request, 'news.html',
+                  {"news": news_list})
+```
+
+``news.html``
+
+```html
+    <div>
+        {% for item in news.data %}
+            <li>{{ item.target.title }}</li>
+        {% endfor %}
+    </div>
+```
+
+![doc-1682588617602](https://cdn.staticaly.com/gh/Sherlock-Homles/gallery@main/20230427/doc-1682588617602.1uk1fdph7jsw.png)
 
