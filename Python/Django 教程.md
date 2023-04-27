@@ -198,18 +198,17 @@ urlpatterns = [
 
 #### 2.4.1 安装Anaconda创建Django虚拟环境
 
-
-
-![image-20230427093128661](C:\Users\竹川夏目\AppData\Roaming\Typora\typora-user-images\image-20230427093128661.png)
+![doc-image-20230427093128661](https://cdn.staticaly.com/gh/Sherlock-Homles/gallery@main/20230427/doc-image-20230427093128661.26cf3ocshoqo.png)
 
 #### 2.4.1、PyCharm添加Python解释器
 
-![image-20230427093254950](C:\Users\竹川夏目\AppData\Roaming\Typora\typora-user-images\image-20230427093254950.png)
+![doc-image-20230427093419300](https://cdn.staticaly.com/gh/Sherlock-Homles/gallery@main/20230427/doc-image-20230427093419300.5kro25oaz4s0.png)
 
 #### 2.4.2、创建Django项目
 
-![image-20230427093419300](C:\Users\竹川夏目\AppData\Roaming\Typora\typora-user-images\image-20230427093419300.png)
+![doc-image-20230427093254950](https://cdn.staticaly.com/gh/Sherlock-Homles/gallery@main/20230427/doc-image-20230427093254950.n608nsgymao.png)
 
 #### 2.4.3 启动项目
 
-![image-20230427093526852](C:\Users\竹川夏目\AppData\Roaming\Typora\typora-user-images\image-20230427093526852.png)
+![doc-image-20230427093526852](https://cdn.staticaly.com/gh/Sherlock-Homles/gallery@main/20230427/doc-image-20230427093526852.2t8d6pnmyfi0.png)
+
