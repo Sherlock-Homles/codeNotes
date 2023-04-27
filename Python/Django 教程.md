@@ -230,7 +230,7 @@ urlpatterns = [
 
 ```json
 # APP目录结构
-─user
+──user
     │  admin.py        # 固定不动，Django默认提供了admin后台管理
     │  apps.py         # 固定不动，app启动类
     │  models.py       # 重要，对数据库操作
@@ -293,5 +293,89 @@ def index(request):
 
 ```json
 python manage.py runserver
+```
+
+### 2.6、模板
+
+模板文件夹``templates``
+
+``urls.py``
+
+```python
+from django.urls import path
+from user import views
+
+urlpatterns = [
+    path('user/list/', views.user_list),
+]
+```
+
+``views.py``
+
+```python
+from django.shortcuts import render
+
+def user_list(request):
+    # 1、优先去根目录的templates中寻找（需提前配置）
+    # 2、根据app的注册顺序，在每个app目录下的templates目录寻找
+    return render(request, 'user_list.html')
+```
+
+访问``http://127.0.0.1:8000/user_list/``
+
+![doc-1682578514245](https://cdn.staticaly.com/gh/Sherlock-Homles/gallery@main/20230427/doc-1682578514245.19dqbsp8d01s.png)
+
+### 2.7、静态文件
+
+在app目录下创建static文件，存放图片、CSS、JS等文件
+
+```json
+ ──static
+    │  ├─css
+    │  ├─img
+    │  │      2023 R01 巴林大奖赛.jpg
+    │  │
+    │  ├─js
+    │  └─plugins
+```
+
+html文件引入静态文件
+
+```html
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div class="box">
+        helloWorld
+    </div>
+    <div class="images">
+        <img src="{% static 'img/2023 R01 巴林大奖赛.jpg' %}" alt="">
+    </div>
+</body>
+</html>
+<style>
+    .box {
+        width: 200px;
+        height: 200px;
+        border: 1px solid #66ccff;
+        line-height: 200px;
+        text-align: center;
+        font-size: 20px;
+        font-weight: bolder;
+    }
+
+    .images {
+        width: 300px;
+    }
+
+    img {
+        width: 100%;
+    }
+</style>
 ```
 
