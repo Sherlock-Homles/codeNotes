@@ -2,7 +2,7 @@
 
 ### 1.1、Linux上安装Django
 
-#### 安装 setuptools
+#### 1.1.1、安装 setuptools
 
 ```python
 # Python3 安装
@@ -31,7 +31,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 
 看到输出了Django的版本号，说明安装成功。
 
-#### pip 命令安装方法
+#### 1.1.2、pip 命令安装方法
 
 ```python
 sudo pip3 install Django -i https://pypi.tuna.tsinghua.edu.cn/simple
@@ -196,7 +196,7 @@ urlpatterns = [
 
 ### 2.4、使用PyCharm创建Django项目
 
-#### 2.4.1 安装Anaconda创建Django虚拟环境
+#### 2.4.1、安装Anaconda创建Django虚拟环境
 
 ![doc-image-20230427093128661](https://cdn.staticaly.com/gh/Sherlock-Homles/gallery@main/20230427/doc-image-20230427093128661.26cf3ocshoqo.png)
 
@@ -208,7 +208,7 @@ urlpatterns = [
 
 ![doc-image-20230427093254950](https://cdn.staticaly.com/gh/Sherlock-Homles/gallery@main/20230427/doc-image-20230427093254950.n608nsgymao.png)
 
-#### 2.4.3 启动项目
+#### 2.4.3、启动项目
 
 ![doc-image-20230427093526852](https://cdn.staticaly.com/gh/Sherlock-Homles/gallery@main/20230427/doc-image-20230427093526852.2t8d6pnmyfi0.png)
 
@@ -546,7 +546,7 @@ pip install mysqlclient
 - 创建、修改、删除数据库中的数据表，但无法创建数据库。
 - 操作数据表中的数据。
 
-#### 3.2.1 连接MySQL
+#### 3.2.1、连接MySQL
 
 修改配置文件``setting.py``
 
