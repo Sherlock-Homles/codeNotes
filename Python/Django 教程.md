@@ -480,6 +480,109 @@ def index(request):
     return redirect("https://www.bilibili.com")
 ```
 
+案例：实现一个简单的用户登录功能
+
+``views.py``
+
+```python
+def login(request):
+    if request.method == "GET":
+        return render(request, "login.html")
+    # POST请求获取用户提交数据
+    # print(request.POST)
+    # 数据校验
+    username = request.POST.get("name")
+    password = request.POST.get("password")
+    if username == "admin" and password == "123456":
+        return render(request, "user_list.html")
+    return render(request, "login.html", {"error_msg": "用户名或密码错误"})
+```
+
+``login.html``
+
+```html
+<div class="login">
+    <form method="post" action="/login/">
+        {# 用于校验请求是否合法 #}
+        {% csrf_token %}
+        <input type="text" name="name" placeholder="用户名">
+        <input type="password" name="password" placeholder="密码">
+        <button type="submit">登录</button>
+        <p style="color: red">{{ error_msg }}</p>
+    </form>
+</div>
+```
+
+## 3、数据库操作
+
+MySQL数据库+pymysql
+
+```python
+import pymysql
+
+# 1、连接MySQL
+conn = pymysql.connect(host="127.0.0.1",prot=3306,user="root",passwd="root",charset="utf8",db="unicom")
+cursor = conn.cursor(cursor=pymysql.cursors.DictCursor)
+
+# 2、发送指令
+cursor.execute("insert into admin(username,paddword,mobile) value('admin','123456','15666666666')")
+conn.commit()
+
+# 3、关闭
+cursor.close()
+conn.close()
+```
+
+Django操作数据库，内部提供了ORM框架
+
+### 3.1、 安装第三方模块
+
+```json
+pip install mysqlclient
+```
+
+### 3.2、ORM
+
+- 创建、修改、删除数据库中的数据表，但无法创建数据库。
+- 操作数据表中的数据。
+
+#### 3.2.1 连接MySQL
+
+修改配置文件``setting.py``
+
+```python
+DATABASES = { 
+    'default': 
+    { 
+        'ENGINE': 'django.db.backends.mysql',    # 数据库引擎
+        'NAME': 'runoob', # 数据库名称
+        'HOST': '127.0.0.1', # 数据库地址，本机 ip 地址 127.0.0.1 
+        'PORT': 3306, # 端口 
+        'USER': 'root',  # 数据库用户名
+        'PASSWORD': '123456', # 数据库密码
+    }  
+} 
+```
+
+#### 3.2.2、创建表
+
+``models.py``
+
+```python
+from django.db import models
 
 
-> 进度：P42:1-11连接MySQL
+class UserInfo(models.Model):
+    name = models.CharField(max_length=32)
+    password = models.CharField(max_length=64)
+    age = models.IntegerField()
+```
+
+```json
+python manage.py makemigrations
+python manage.py migrate
+```
+
+注意：app必须已注册
+
+> 当前 进度：P42:1-11连接MySQL
