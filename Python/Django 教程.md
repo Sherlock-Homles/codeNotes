@@ -585,4 +585,33 @@ python manage.py migrate
 
 注意：app必须已注册
 
-> 当前 进度：P42:1-11连接MySQL
+#### 3.2.3、增删改查
+
+```python
+def orm(request):
+    # 1、新增数据
+    # UserInfo.objects.create(name="admin", password="123456", age="20")
+    # UserInfo.objects.create(name="root", password="root", age="21")
+
+    # 2、删除数据
+    # UserInfo.objects.filter(name="root").delete()
+
+    # 3、查询数据
+    # data_list: 获取符合条件的所有数据，得到QuerySet类型数据
+    # data_list = UserInfo.objects.all()
+    # print(data_list)
+    data_list = UserInfo.objects.filter(name="admin")
+    # row_obj: 获取第一条数据，得到一个对象
+    row_obj = UserInfo.objects.filter(name="admin").first()
+    for obj in data_list:
+        print(obj.id, obj.name, obj.password, obj.age)
+
+    # 4、更新数据
+    UserInfo.objects.filter(name="admin").update(age="99")
+
+    return HttpResponse("SUCCESS")
+```
+
+
+
+> 当前 进度：P48:1-17 案例
