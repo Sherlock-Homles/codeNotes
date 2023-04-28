@@ -455,3 +455,31 @@ def news(request):
 
 ![doc-1682588617602](https://cdn.staticaly.com/gh/Sherlock-Homles/gallery@main/20230427/doc-1682588617602.1uk1fdph7jsw.png)
 
+### 2.9、请求和响应
+
+```python
+def index(request):
+    # request是一个对象，封装入用户发过来的所有请求相关数据
+    # 1、[请求]获取请求方式
+    print(request.method)
+
+    # 2、[请求]在url上传递值/index/?a=1&b=2
+    print(request.GET)
+
+    # 3、[请求]在请求中提交数据
+    print(request.POST)
+
+    # 4、[响应]HttpResponse("返回内容")，内容字符串返回给请求者
+    # return HttpResponse("Wellcome")
+
+    # 5、[响应]读取HTML内容 + 渲染（替换）-> 字符串，返回给用户浏览器
+    # return render(request, 'index.html', {"text": "主页"})
+
+    # 6、[响应]浏览器重定向到其他网站
+    # 关于重定向：是浏览器直接访问重定向后的地址
+    return redirect("https://www.bilibili.com")
+```
+
+
+
+> 进度：P42:1-11连接MySQL
