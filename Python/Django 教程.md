@@ -612,6 +612,48 @@ def orm(request):
     return HttpResponse("SUCCESS")
 ```
 
+## 4、项目实战
+
+案例：做一个简单的员工管理系统``staffManagement``
+
+### 4.1、创建项目
+### 4.2、创建app
+### 4.3、创建表结构（Django）
+
+```python
+class Department(models.Model):
+    """部门表"""
+    code = models.CharField(verbose_name='部门编码', max_length=32)
+    name = models.CharField(verbose_name='部门名称', max_length=32)
+
+
+class UserInfo(models.Model):
+    """员工表"""
+    user_code = models.CharField(verbose_name='用户编码', max_length=16)
+    user_real_name = models.CharField(verbose_name='真实姓名', max_length=16)
+    user_password = models.CharField(verbose_name='密码', max_length=64)
+    age = models.IntegerField(verbose_name='年龄')
+    account = models.DateTimeField(verbose_name='账号余额', max_length=10, decimal_places=2, default=0)
+    add_time = models.DateTimeField(verbose_name='入职时间')
+    # 1、外键约束(部门编码只能是部门表中存在的数据)
+    #  - to, 数据表关联
+    #  - to_field, 数据表中的数据列关联
+    # 2、Django启动
+    #  - 写成 dept
+    #  - 生成数据列 dept_id
+    # 3、部门表被删除
+    # 3.1、级联删除
+    # dept = models.ForeignKey(to='Department', to_fields='code',on_delete=models.CASCADE())
+    # 3.2、置空
+    dept = models.ForeignKey(to='Department', to_fields='code',on_delete=models.SET_NULL())
+    # 在Django中做的约束
+    gender_choices = (
+        (1,'男')
+        (2,'女')
+    )
+    gender = models.SmallIntegerField(verbose_name='性别',choices=gender_choices)
+```
+
 
 
 > 当前进度：P48:1-17 案例
