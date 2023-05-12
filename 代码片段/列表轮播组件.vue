@@ -7,71 +7,88 @@
       height="500"
       border
       ref="table"
+      :cell-style="cellStyle"
       :header-cell-style="{ background: '#0658a1', color: '#fff' }"
+      @cell-mouse-enter="mouseEnter"
+      @cell-mouse-leave="mouseLeave"
     >
-      <el-table-column prop="name" label="班次名称" align="center" width="400">
+      <el-table-column prop="scheduleCycleDate" label="日期" align="center">
       </el-table-column>
-      <el-table-column prop="time" label="发运时间" align="center">
+      <el-table-column prop="departureStation" label="始发站" align="center">
       </el-table-column>
-      <el-table-column prop="direction" label="方向" align="center">
+      <el-table-column prop="portStation" label="口岸" align="center">
       </el-table-column>
-      <el-table-column prop="type" label="班列类型" align="center">
+      <el-table-column prop="destinationCountry" label="目的国" align="center">
       </el-table-column>
-      <el-table-column prop="line" label="发运线路" align="center">
-      </el-table-column>
-      <el-table-column prop="number" label="实际仓位数量" align="center">
-      </el-table-column>
-      <el-table-column
-        prop="setOut"
-        label="发站"
-        align="center"
-      ></el-table-column>
-      <el-table-column
-        prop="reach"
-        label="到站"
-        align="center"
-      ></el-table-column>
     </el-table>
   </div>
 </template>
 
 <script>
+import { carousel } from '@/api/schedule/index.js'
 export default {
   data() {
     return {
       title: '山东高速齐鲁号日韩陆海快线班期表',
-      time: '2023年5月',
+      time: `${new Date().getFullYear()}年${new Date().getMonth() + 1}月`,
       tableData: [],
+      timer: '',
     }
   },
   mounted() {
-    this.lunbo()
+    this.getData()
+  },
+  watch: {
+    tableData(newval, oldval) {
+      if (newval.length >= 10) {
+        // this.getData()
+        this.lunbo()
+      }
+    },
   },
 
   methods: {
+    // 鼠标移入
+    mouseEnter() {
+      clearInterval(this.timer)
+      this.timer = null
+    },
+    //鼠标移出
+    mouseLeave() {
+      this.lunbo()
+    },
     lunbo() {
       // 拿到表格挂载后的真实DOM
       const table = this.$refs.table
       // 拿到表格中承载数据的div元素
       const divData = table.bodyWrapper
       // 拿到元素后，对元素进行定时增加距离顶部距离，实现滚动效果(此配置为每100毫秒移动1像素)
-      setInterval(() => {
+      this.timer = setInterval(() => {
         // 元素自增距离顶部1像素
         divData.scrollTop += 1
         // 判断元素是否滚动到底部(可视高度+距离顶部=整个高度)
         if (divData.clientHeight + divData.scrollTop == divData.scrollHeight) {
-          this.tableData.push({
-            name: '2023-序号163-伊尔库茨克-编组-二连-济南南',
-            time: '2023-05-01',
-            direction: '回程',
-            type: '整列',
-            line: '中俄',
-            number: '62',
-            setOut: '伊尔库茨克 编组',
-            reach: '济南南',
-          })
+          divData.scrollTop = 0
         }
       }, 30)
+    },
+    getData() {
+      carousel({
+        scheduleDate: `${new Date().getFullYear()}-${
+          new Date().getMonth() + 1 < 10
+            ? `0${new Date().getMonth() + 1}`
+            : new Date().getMonth() + 1
+        }`,
+      }).then((response) => {
+        if (response.data.code === 0) {
+          this.tableData = response.data.data
+        }
+      })
+    },
+    cellStyle() {
+      return {
+        background: '#f7f9fb',
+      }
     },
   },
 }
@@ -98,7 +115,7 @@ export default {
   border-radius: 3px;
 }
 .box {
-  padding: 5% 12%;
+  padding: 5% 20%;
   color: #3f4042;
   div {
     text-align: center;
