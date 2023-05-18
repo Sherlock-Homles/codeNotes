@@ -1,4 +1,4 @@
-[Pinia](https://so.csdn.net/so/search?q=Pinia&spm=1001.2101.3001.7020) 是 Vue.js 3 的状态管理库，使用起来非常简单和直观
+> [Pinia](https://so.csdn.net/so/search?q=Pinia&spm=1001.2101.3001.7020) 是 Vue.js 3 的状态管理库，使用起来非常简单和直观
 
 ## Pinia 的优点大致如下
 
@@ -118,7 +118,7 @@ export const useStore = defineStore('storeId', {
 
 组件中使用 getters
 
-```
+```vue
 <template>
 	<div>
 		{{ doubleNum }}
