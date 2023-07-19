@@ -142,3 +142,82 @@ handleSelectionChange(val, checkFlag) {
      
     },
 ```
+
+## 4、element-ui dialog 对话框局部显示（不全屏遮罩）
+
+### 4.1、遮罩覆盖住了对话框
+
+设置 [modal](https://so.csdn.net/so/search?q=modal&spm=1001.2101.3001.7020)-append-to-body 或者 append-to-body 属性为 false
+
+```vue
+<el-dialog
+            title="新增对话框"
+            width="80%"
+            :modal-append-to-body='false'
+            :append-to-body="false"
+            :center="true"
+        >
+</el-dialog>
+```
+
+### 4.2、如何让对话框在某一个 div 中局部弹出？
+
+如需要在 box1 中弹出对话框
+
+```vue
+<div class = "box1">
+  <el-dialog
+    title="新增对话框"
+    width="80%"
+    :modal-append-to-body='false'
+    :append-to-body="false"
+    :center="true"
+  >
+  </el-dialog>
+</div>
+```
+
+需要在 css 中修改 [el-dialog](https://so.csdn.net/so/search?q=el-dialog&spm=1001.2101.3001.7020) 的原始样式，将 position 由 fixed 修改为 absolute（没有效果的话加 / deep / 和！important）
+
+```css
+/deep/.el-dialog__wrapper{
+    position: absolute !important;
+  }
+/deep/.v-modal{
+    position: absolute !important;
+  }
+```
+
+效果如图所示，对话框仅在红框的 div 内展示
+
+![img](https://img-blog.csdnimg.cn/043a77fee08844c3893eb0af616567f8.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAQV9sZXh6YW5kYQ==,size_20,color_FFFFFF,t_70,g_se,x_16)
+
+## 5、vue 如何监听浏览器主动刷新
+
+### 5.1、监听浏览器主动刷新
+
+```javascript
+ mounted() {
+             window.addEventListener('beforeunload', e => this.beforeunloadHandler(e))   //监听页面刷新触发事件
+        },
+ methods(){
+  		beforeunloadHandler(e) {    //根据事件进行操作进行操作
+                console.log(e)
+                console.log('浏览器刷新') 
+            },
+},
+destroyed () {  //进行监听销毁
+            window.removeEventListener('beforeunload', e =>this.beforeunloadHandler(e))
+},
+```
+
+### 5.2、监听刷新事件
+
+```javascript
+ mounted() {
+    window.addEventListener("load", () => {
+      //写入你想要执行的代码
+    });
+  },
+```
+
