@@ -221,3 +221,91 @@ destroyed () {  //进行监听销毁
   },
 ```
 
+## 6、前端单点登录功能实现
+
+``./src/util/auth.js``
+
+```javascript
+import Cookies from 'js-cookie'
+const TokenKey = 'x-access-token'
+
+export function getToken() {
+  return Cookies.get(TokenKey)
+}
+
+export function setToken(token) {
+  Cookies.set(TokenKey, token, { domain: 'thingshive.com.cn' })
+  // Cookies.setDomain('.thingshive.com.cn')
+  return Cookies.set(TokenKey, token)
+  //
+}
+
+export function removeToken() {
+  Cookies.remove(TokenKey, {domain: 'thingshive.com.cn'})
+  return Cookies.remove(TokenKey)
+  // return window.sessionStorage.clear
+}
+```
+
+``./src/permission.js``
+
+```javascript
+import { getToken } from '@/util/auth';
+router.beforeEach((to, from, next) => {
+    console.log('to', to);
+    console.log('from', from);
+    NProgress.start();
+    // 单点登录 start
+    // 进入/securityProtection/index页面，且没有token
+    if (to.path.includes('/securityProtection/index') && !getToken()) {
+        const loginForm = {
+            username: '18655668899',
+            password: 'Huanyu@2022',
+            code: '',
+            randomStr: randomLenNum(4, true)
+        };
+
+        store.dispatch('LoginByUsername', loginForm).then(res => {
+            console.log('res-login', res);
+            if (res == 0) {
+                next();
+            } else {
+                next('/login-error');
+                window.localStorage.removeItem('logStatus');
+            }
+        }).catch(()=>{
+            next('/login-error');
+        })
+        return
+    }
+    // 单点登录 end
+    if (getToken()) {
+        // determine if there has token
+        // 存在token，进行路由配置
+        if (to.path === '/login') {
+            next({ path: '/' });
+            NProgress.done();
+        } else {
+            if (store.getters.menus.length == 0) {
+                store.dispatch('GenerateRoutes', {}).then(routes => {
+                    // 动态组装路由
+                    router.addRoutes(routes);
+                    next({ ...to, replace: true });
+                });
+            } else {
+                next();
+            }
+        }
+    } else {
+        // 没有token
+        if (whiteList.indexOf(to.path) !== -1) {
+            // 在免登录白名单，直接进入
+            next();
+        } else {
+            next('/login'); // 否则全部重定向到登录页
+            NProgress.done();
+        }
+    }
+});
+```
+
