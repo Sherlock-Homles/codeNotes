@@ -309,3 +309,26 @@ router.beforeEach((to, from, next) => {
 });
 ```
 
+## 7、JS字符串去掉特殊字符和转义字符
+
+```javascript
+/*** 
+* 去掉字符串中的特殊字符 
+*/  
+var excludeSpecial = function(s) {  
+   // 去掉转义字符  
+   s = s.replace(/[\'\"\\\/\b\f\n\r\t]/g, '');  
+   // 去掉特殊字符  
+   s = s.replace(/[\@\#\$\%\^\&\*\{\}\:\"\L\<\>\?]/);  
+   return s;  
+};  
+ 
+function main(){  
+   var s = "He is\tcalled 'Johnny'";;  
+   console.log(s);  
+   console.log(excludeSpecial(s));  
+   console.log(s);  
+};  
+main();  
+```
+
