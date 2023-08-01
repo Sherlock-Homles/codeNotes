@@ -60,7 +60,7 @@
                             <el-button
                                 type="primary"
                                 :size="buttonSize"
-                                @click="exportExcel('form')"
+                                @click="exportExcel"
                                 style="
                                     float: right;
                                     background-color: #347df7;
@@ -523,3 +523,88 @@ export default {
     }
 ```
 
+### 6、前端指定字段Excel导出
+
+```html
+					<!-- 导出列表 隐藏 -->
+                    <table-com
+                        :table-data="exportData"
+                        :table-label="bindTableColumns"
+                        :hasSelect="hasSelect"
+                        :hasIndex="hasIndex"
+                        id="exportTable"
+                        style="height: 0px; display: none"
+                    >
+                    </table-com>
+```
+
+```javascript
+        // 导出方法
+        exportExcel() {
+            getDetail(this.listQuery).then(res => {
+                this.exportData = res.data.records
+                setTimeout(() => {
+                    exportFunPlus('同步市平台台账明细', '#exportTable')
+                }, 1000)
+            })
+        }
+```
+
+```java
+// 引入的导出方法
+import { exportFunPlus } from '@/util/exportTablePlus.js'
+```
+
+``/util/exportTablePlus.js``
+
+```javascript
+import FileSaver from 'file-saver'
+import XLSX from 'xlsx'
+
+export function exportFunPlus(title, id) {
+  console.log(title, id);
+  /* 节点选择器，此处为选择id为blankBable的表格 */
+  var wb = XLSX.utils.table_to_book(document.querySelector(id), {
+    raw: true
+  })
+  var wbout = XLSX.write(wb, {
+    bookType: 'xlsx',
+    bookSST: true,
+    type: 'array'
+  })
+  try {
+    // xxxx.xlsx为生成表格的名字
+    FileSaver.saveAs(
+      new Blob([wbout], {
+        type: 'application/octet-stream'
+      }),
+      `${title}${setTime()}.xlsx`
+    )
+  } catch (e) {
+    if (typeof console !== 'undefined') console.log(e, wbout)
+  }
+  return wbout
+}
+
+// 获取时间函数
+export function setTime() {
+  var date = new Date()
+  var year = date.getFullYear()
+  var month = date.getMonth() + 1
+  var day = date.getDate()
+  var hour = date.getHours()
+  var minute = date.getMinutes()
+  var second = date.getSeconds()
+  month = month > 9 ? month : '0' + month
+  day = day > 9 ? day : '0' + day
+  hour = hour > 9 ? hour : '0' + hour
+  minute = minute > 9 ? minute : '0' + minute
+  second = second > 9 ? second : '0' + second
+  var newdata = year + '' + month + day + hour + minute + second
+  return newdata
+}
+```
+
+导出的Excel文件：
+
+![Excel](https://cdn.staticaly.com/gh/Sherlock-Homles/gallery@main/image.50i8w7b9jco0.webp)
