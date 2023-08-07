@@ -402,3 +402,33 @@ const result = JSON.parse(JSON.stringify(source));
 - 拷贝 `RegExp` 引用类型会变成空对象；
 - 对象中含有`NaN、Infinity`以及 `-Infinity`，`JSON` 序列化的结果会变成`null`；
 - 无法拷贝对象的循环引用，即对象成环 (`obj[key] = obj`)。
+
+## 9、this.$set的用法
+
+### 9.1、this.$set实现什么功能，为什么要用它
+
+当你发现你给对象加了一个属性，在控制台能打印出来，但是却没有更新到视图上时，也许这个时候就需要用到``this.$set() ``这 个 方 法 了 。
+
+官方解释：向响应式对象中添加一个属性，并确保这个新属性同样是响应式的，且触发视图更新。它必须用于向响应式对象上添加新属性，因为 Vue 无法探测普通的新增属性 (比如 this.myObject.newProperty = ‘hi’).
+
+### 9.2、使用方法
+
+调用方法：this.$set( target, key, value )
+
+target：要更改的数据源(可以是对象或者数组)
+
+key：要更改的具体数据
+
+value ：重新赋的值
+
+```javascript
+submit(val, addStatus) {
+  const data = val
+  if (addStatus == 'add') {
+     this.tableData.push(data)
+  } else if (addStatus == 'edit') {
+     this.$set(this.tableData, this.dialogRowIndex, data)
+  }
+}
+```
+
