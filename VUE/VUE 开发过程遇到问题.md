@@ -332,3 +332,73 @@ function main(){
 main();  
 ```
 
+## 8、数据深拷贝
+
+参考文章：[浅拷贝（shallow copy）与深拷贝（deep copy）](https://blog.csdn.net/Mayonnaise_Sann/article/details/130269137)
+
+### 8.1、浅拷贝
+
+- 仅复制最外一层，对于内层是相同的引用。
+- 对于基本数据类型的属性，拷贝值。源对象和拷贝对象开辟不同的内存空间，不共享。
+- 对于引用数据类型的属性，拷贝内存地址。源对象和拷贝对象指向同一块内存空间，共享。
+
+#### 扩展运算符
+
+```javascript
+const source = {
+	A: 'A',
+    referProp: ['A','B','C']
+}
+// 浅拷贝
+const result = {...source}
+```
+
+#### Object.assign
+
+```javascript
+const source1 = {
+	A: 'A',
+    referProp: ['A','B','C']
+}
+const source2 = { B: 'B' }
+// 浅拷贝
+const result = Object.assign({}, source1, source2)
+// {A: 'A', referProp: ['A','B','C'], B: 'B'}
+```
+
+### 8.2、深拷贝
+
+- 在堆内存中开辟新的空间存储数据对象，源对象和拷贝对象存储地址不同，不共享。
+
+#### 函数库 lodash
+
+```javascript
+const _ = require('lodash');
+const source = {
+   A: 'A',
+    referProp: ['A','B','C']
+};
+const result = _.cloneDeep(source);
+```
+
+#### JSON.stringify
+
+使用 [`JSON.stringify()`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify) 将可以被[序列化](https://developer.mozilla.org/zh-CN/docs/Glossary/Serialization)的对象转换为 JSON 字符串，然后使用 [`JSON.parse()`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse) 将该字符串转换回（全新的）JavaScript 对象。
+
+```javascript
+const source = {
+   A: 'A',
+    referProp: ['A','B','C']
+};
+const result = JSON.parse(JSON.stringify(source));
+```
+
+#### 存在问题
+
+- 拷贝的对象中如果有 function、undefined、symbol，当使用过`JSON.stringify()`进行处理之后，都会消失。
+- 无法拷贝不可枚举的属性；
+- 无法拷贝对象的原型链；
+- 拷贝 `Date` 引用类型会变成字符串；
+- 拷贝 `RegExp` 引用类型会变成空对象；
+- 对象中含有`NaN、Infinity`以及 `-Infinity`，`JSON` 序列化的结果会变成`null`；
+- 无法拷贝对象的循环引用，即对象成环 (`obj[key] = obj`)。
