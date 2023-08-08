@@ -432,3 +432,104 @@ submit(val, addStatus) {
 }
 ```
 
+## 10、VueX的存储与使用缓存页面查询条件
+
+### 10.1、在vuex里新建一个对象用来保存查询条件
+
+``src/store/index.js``
+
+```javascript
+import Vue from 'vue'
+import Vuex from 'vuex'
+import query from './modules/query'
+import getters from './getters'
+
+Vue.use(Vuex)
+const store = new Vuex.Store({
+  modules: {
+    query
+  },
+  getters,
+})
+
+export default store
+```
+
+### 10.2、在mutations：{}里面新加一个函数用来修改state里面的值，因为vuex里是不能直接修改的
+
+``src/store/modules/query.js``
+
+```javascript
+const query = {
+  state: {
+    rateSettingQuery: {
+      shiftName: undefined,
+      startTime: undefined,
+      endTime: undefined,
+      shippingLine: undefined,
+      destinationName: undefined,
+      portStation: undefined,
+      trip: undefined,
+      platformCode: undefined,
+      page: 1,
+      limit: 10
+    },
+  },
+  mutations: {
+    save_StorageQueryCriteria(state, value) {
+      state.rateSettingQuery.shiftName = value.shiftName
+      state.rateSettingQuery.startTime = value.startTime
+      state.rateSettingQuery.endTime = value.endTime
+      state.rateSettingQuery.shippingLine = value.shippingLine
+      state.rateSettingQuery.destinationName = value.destinationName
+      state.rateSettingQuery.portStation = value.portStation
+      state.rateSettingQuery.trip = value.trip
+      state.rateSettingQuery.platformCode = value.platformCode
+      state.rateSettingQuery.page = value.page
+      state.rateSettingQuery.limit = value.limit
+    },
+  }
+
+}
+
+export default query
+```
+
+### 10.3、使用
+
+页面跳转时保存查询参数
+
+```javascript
+toDetail(row) {
+    // save_StorageQueryCriteria 这个方法就是mutations里的函数
+    this.$store.commit('save_StorageQueryCriteria', this.listQuery)
+    this.$router.push({
+        path: '/wel/bancixq',
+        query: {
+           id: row.shiftId,
+           province: true
+         }
+    })
+}
+```
+
+数据回显方法
+
+```javascript
+		// 回显查询条件
+        queryConditionsDisplayed() {
+            // 把vueX里的数据取出来
+            const obj = this.$store.state.query.rateSettingQuery
+            this.listQuery.shiftName = obj.shiftName
+            this.listQuery.startTime = obj.startTime
+            this.listQuery.endTime = obj.endTime
+            this.listQuery.shippingLine = obj.shippingLine
+            this.listQuery.destinationName = obj.destinationName
+            this.listQuery.portStation = obj.portStation
+            this.listQuery.trip = obj.trip
+            this.listQuery.platformCode = obj.platformCode
+            this.listQuery.page = obj.page
+            this.listQuery.limit = obj.limit
+            this.getList()
+        }
+```
