@@ -533,3 +533,226 @@ toDetail(row) {
             this.getList()
         }
 ```
+
+## 11、点击按钮关闭当前tab页并返回上个页面
+
+### 11.1、使用：
+
+```javascript
+        back() {
+            this.$store.commit('DEL_TAG', this.$store.getters.tag)
+            this.$router.back()
+        }
+```
+
+### 11.2、DEL_TAG方法配置：
+
+``store/modules/tags.js``
+
+```javascript
+import {
+  setStore,
+  getStore,
+  removeStore
+} from '@/util/store'
+const tagObj = {
+  label: '',
+  value: '',
+  query: '',
+  num: '',
+  close: true
+}
+
+function setFistTag(list) {
+  if (list.length == 1) {
+    list[0].close = false
+  } else {
+    list.some(a => {
+      a.close = true
+    })
+  }
+  return list
+}
+const navs = {
+  state: {
+    tagList: getStore({
+      name: 'tagList'
+    }) || [],
+    tag: getStore({
+      name: 'tag'
+    }) || tagObj,
+    tagWel: {
+      label: '首页',
+      value: '/wel/index'
+    },
+    tagCurrent: getStore({
+      name: 'tagCurrent'
+    }) || []
+  },
+  actions: {
+
+  },
+  mutations: {
+    UPDATE_TAGLIST: (state, tagList) => {
+      state.tagList = tagList
+      setStore({
+        name: 'tagList',
+        content: state.tagList,
+        type: 'session'
+      })
+    },
+    ADD_TAG: (state, action) => {
+      state.tag = action
+      setStore({
+        name: 'tag',
+        content: state.tag,
+        type: 'session'
+      })
+      if (state.tagList.some(a => a.value === action.value)) return
+      state.tagList.push({
+        label: action.label,
+        value: action.value,
+        query: action.query,
+        meta: action.meta
+      })
+      state.tagList = setFistTag(state.tagList)
+      setStore({
+        name: 'tagList',
+        content: state.tagList,
+        type: 'session'
+      })
+    },
+    SET_TAG_CURRENT: (state, tagCurrent) => {
+      state.tagCurrent = tagCurrent
+      setStore({
+        name: 'tagCurrent',
+        content: state.tagCurrent,
+        type: 'session'
+      })
+    },
+    SET_TAG: (state, value) => {
+      state.tagList.forEach((ele, num) => {
+        if (ele.value === value) {
+          state.tag = state.tagList[num]
+          setStore({
+            name: 'tag',
+            content: state.tag,
+            type: 'session'
+          })
+        }
+      })
+    },
+    DEL_ALL_TAG: (state, action) => {
+      state.tag = tagObj
+      state.tagList = []
+      state.tagList.push(state.tagWel)
+      removeStore({
+        name: 'tag'
+      })
+      removeStore({
+        name: 'tagList'
+      })
+    },
+    DEL_TAG_OTHER: (state, action) => {
+      state.tagList.forEach((ele, num) => {
+        if (ele.value === state.tag.value) {
+          state.tagList = state.tagList.slice(num, num + 1)
+          state.tag = state.tagList[0]
+          state.tagList[0].close = false
+          setStore({
+            name: 'tag',
+            content: state.tag,
+            type: 'session'
+          })
+          setStore({
+            name: 'tagList',
+            content: state.tagList,
+            type: 'session'
+          })
+        }
+      })
+    },
+    DEL_TAG: (state, action) => {
+      state.tagList.forEach((ele, num) => {
+        if (ele.value === action.value) {
+          state.tagList.splice(num, 1)
+          state.tagList = setFistTag(state.tagList)
+          setStore({
+            name: 'tag',
+            content: state.tag,
+            type: 'session'
+          })
+          setStore({
+            name: 'tagList',
+            content: state.tagList,
+            type: 'session'
+          })
+        }
+      })
+    }
+  }
+}
+export default navs
+```
+
+引用：
+
+``store/index.js``
+
+```javascript
+import Vue from 'vue'
+import Vuex from 'vuex'
+import user from './modules/user'
+import common from './modules/common'
+import tags from './modules/tags'
+import errLog from './modules/errLog'
+import query from './modules/query'
+import getters from './getters'
+
+Vue.use(Vuex)
+const store = new Vuex.Store({
+  modules: {
+    user,
+    common,
+    errLog,
+    tags,
+    query
+  },
+  getters,
+})
+
+export default store
+```
+
+``store/getters.js``
+
+```javascript
+const getters = {
+  tag: state => state.tags.tag,
+  website: state => state.common.website,
+  theme: state => state.common.theme,
+  themeName: state => state.common.themeName,
+  cacheControl: state => state.common.cacheControl,
+  isCollapse: state => state.common.isCollapse,
+  isLock: state => state.common.isLock,
+  isFullScren: state => state.common.isFullScren,
+  isLoading: state => state.common.isLoading,
+  isTags: state => state.common.isTags,
+  menuType: state => state.common.menuType,
+  lockPasswd: state => state.common.lockPasswd,
+  tagList: state => state.tags.tagList,
+  tagCurrent: state => state.tags.tagCurrent,
+  tagWel: state => state.tags.tagWel,
+  access_token: state => state.user.access_token,
+  platform_info: state => state.user.platform_info,
+  refresh_token: state => state.user.refresh_token,
+  roles: state => state.user.roles,
+  userInfo: state => state.user.userInfo,
+  permissions: state => state.user.permissions,
+  menu: state => state.user.menu,
+  menus: state => state.user.menus,
+  errLog: state => state.errLog.errLog
+}
+export default getters
+```
+
