@@ -756,3 +756,29 @@ const getters = {
 export default getters
 ```
 
+## 12、el-input 限制只能输入两位小数，并且自定义位数
+
+```html
+<el-input oninput="value=value.replace(/[^\d.]/g, '').replace(/\.{2,}/g, '.').replace('.', '$#$').replace(/\./g, '').replace('$#$', '.').replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3').replace(/^\./g, '').replace(/^0+(?!\.|$)/g, ''),value = Number(value) >= 999999.99 ? 999999.99 : value" size="mini" v-model="scope.row[value]" placeholder="请输入内容" :controls="false" :maxlength="9"></el-input>
+```
+
+### 12.1、使用
+
+1. /\[^\d.]/g，匹配所有非数字和非小数点的字符，用空字符替换。
+2. /.{2,}/g，匹配两个及以上的连续小数点，用一个小数点替换。
+3. /./g，匹配所有小数点，替换为特殊占位符 KaTeX parse error: Expected 'EOF', got '#' at position 1: #̲。
+4. /^(-)*(\d+).(\d\d).*$/，匹配首位是负号（可有可无）的数字，小数点后面只保留两位。
+5. /^./g，匹配所有以小数点开头的内容，用空字符替换。
+6. /^0+(?!.|$)/g，匹配所有以 0 开头的数字（小数点后不能跟着数字），用空字符替换。
+
+总体来说，就是将输入框中非数字和非小数点的字符删除，保留小数点前后只有一位，且删除开头的 0。这样做是为了输入时限制只能输入数字和小数点，并且保证输入的数据格式正确。
+
+### 12.2、自定位数
+
+```javascript
+replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3') // 两位小数
+replace(/^(\-)*(\d+)\.(\d\d\d\d).*$/, '$1$2.$3') // 四位小数
+```
+
+
+
