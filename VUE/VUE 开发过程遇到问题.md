@@ -780,5 +780,51 @@ replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3') // 两位小数
 replace(/^(\-)*(\d+)\.(\d\d\d\d).*$/, '$1$2.$3') // 四位小数
 ```
 
+## 13、JavaScript常用方法，根据二维数组内某个元素的值排序，去重
 
+### 13.1、 二维数组排序 (根据某个字段排序)
 
+```javascript
+/* 二维数组排序(根据某个字段排序) */
+const listSortBy = (arr, field, sort = "asc") => {
+    arr.sort(function (a, b) {
+	    return a[field] - b[field]
+	})
+	if (sort === "desc") {
+		arr.reverse()
+	}
+	return arr
+}
+```
+
+### 13.2、二维数组去重（根据某个字段值去重）
+
+```javascript
+/* 数组去重 */
+const uniqueArray = arr => {
+	return Array.from(new Set(arr))
+}
+/* 二维数组去重(根据数组内某个元素的值去重) */
+const uniqueArr = (arr, field) => {
+	const res = new Map();
+	return arr.filter(item => !res.has(item[field]) && res.set(item[field], 1))
+}
+```
+
+### 13.3、深拷贝
+
+```javascript
+const deepCopy = source => {
+	if (typeof source != 'object') {
+		return source
+	}
+	if (source == null) {
+		return source
+	}
+	var newObj = source.constructor === Array ? [] : {} //开辟一块新的内存空间
+	for (var i in source) {
+		newObj[i] = this.deepCopy(source[i])
+	}
+	return newObj
+}
+```
