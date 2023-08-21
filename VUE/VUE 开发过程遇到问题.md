@@ -828,3 +828,33 @@ const deepCopy = source => {
 	return newObj
 }
 ```
+
+## 14、VUE监听路由参数跳转不同页面
+
+```javascript
+watch: {
+  $route: {
+      handler(to, from) {
+          if (to.path == '/planned/receivableDetail') {
+              if (
+                  (to.query.num == 3 || to.query.num == 2) && from
+                      ? from.query.num == 1
+                      : false
+              ) {
+                  this.$store.commit('DEL_TAG', this.$store.getters.tag)
+                  if (to.query.platformLevel == 1) {
+                      this.$router.push({
+                          path: '/planned/receivable'
+                      })
+                  } else if (to.query.platformLevel == 2) {
+                      this.$router.push({
+                          path: '/planned/payable'
+                      })
+                  }
+              }
+          }
+      }
+  }
+}
+```
+
