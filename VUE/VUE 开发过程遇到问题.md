@@ -858,3 +858,53 @@ watch: {
 }
 ```
 
+## 15、[blob类型的数据如何转为JSON](https://www.yzktw.com.cn/post/1143556.html)
+
+Blob类型的数据是一种能够保存二进制数据的JavaScript对象。在前端开发中，我们通常会使用blob来保存图像、音频、视频等多媒体数据。
+
+如果我们需要将blob类型的数据转换成JSON格式，可以通过以下步骤：
+
+```JavaScript
+const blob = new Blob(['{"name": "张三", "age": 18 }'], { type: 'application/json' }); // 创建一个JSON格式的Blob对象
+const reader = new FileReader();
+reader.readAsText(blob); // 以文本形式读取Blob对象
+reader.onload = () => {
+	const jsonStr = reader.result; // 获取读取的内容
+	const jsonData = JSON.parse(jsonStr); // 将JSON格式的字符串转换为JavaScript对象
+	console.log(jsonData.name); // 输出结果
+};
+```
+
+实例：
+
+```javascript
+        // 运费核算表导出导出
+        exportData(row) {
+            fdBillExport({
+                uuid: row.uuid,
+                platformLevel: 2
+            }).then(response => {
+                var blob = new Blob([response.data], {
+                    type: 'application/vnd.ms-excel;charset=UTF-8'
+                })
+                const reader = new FileReader()
+                reader.readAsText(blob) // 以文本形式读取Blob对象
+                reader.onload = () => {
+                    const jsonStr = reader.result // 获取读取的内容
+                    const jsonData = JSON.parse(jsonStr) // 将JSON格式的字符串转换为JavaScript对象
+                    // 输出结果
+                    if (!jsonData.b) { // 导出接口返回异常
+                        this.$message.info(jsonData.msg)
+                    } else {
+                        var link = document.createElement('a')
+                        link.href = window.URL.createObjectURL(blob)
+                        link.download = `运费核算表.xls`
+                        link.target = '_blank'
+                        link.click()
+                        window.URL.revokeObjectURL(link.href)
+                    }
+                }
+            })
+        }
+```
+
