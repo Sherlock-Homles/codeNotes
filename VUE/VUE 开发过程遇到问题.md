@@ -910,6 +910,8 @@ reader.onload = () => {
 
 ## 16、el-select下拉实现：全选、反选、清空功能
 
+参考：https://blog.csdn.net/askuld/article/details/131184542
+
 ``父组件传参``
 
 ```vue
