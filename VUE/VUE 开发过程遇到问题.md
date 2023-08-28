@@ -908,3 +908,139 @@ reader.onload = () => {
         }
 ```
 
+## 16、el-select下拉实现：全选、反选、清空功能
+
+``父组件传参``
+
+```vue
+<add-Dialog
+:dialogVisible="dialogVisibleAdd"
+:dialogTitle="dialogTitleAdd"
+:formData="addList"
+:inputLabel="inputLabelAdd"
+></add-Dialog>
+
+inputLabelAdd: [
+{
+    label: '箱号',
+    placeholder: '请选择箱号',
+    value: 'containerNumber',
+    type: 'select',
+    disabled: false,
+    option: [],
+    optionKey: 'rowId',
+    optionLabel: 'containerNumber',
+    optionValue: '',
+    change: 'changeBox'
+}]
+```
+
+``子组件``
+
+```vue
+<el-col :span="24" v-for="(item, index) in inputLabel" :key="index">
+    <el-form-item :label="item.label" :prop="item.value">
+        <el-select
+            v-if="
+                item.type == 'select' &&
+                item.optionValue === '' &&
+                Array.isArray(addForm[`${item.value}`])
+            "
+            :placeholder="item.placeholder"
+            v-model="addForm[`${item.value}`]"
+            clearable
+            :size="inputSize"
+            :disabled="item.disabled"
+            @change="val => changeClick(val, item.change)"
+            :value-key="item.optionKey"
+            filterable
+            multiple
+            collapse-tags
+        >
+          <div class="select_up">
+              <el-button type="text" v-on:click=" selectAll(item.option, item.value)">
+                <i class="el-icon-circle-check" />全选
+              </el-button>
+              <el-button type="text" v-on:click="removeTag(item.value)">
+                <i class="el-icon-close" />清空
+              </el-button>
+              <el-button type="text" v-on:click="selectReverse(item.option,item.value)">
+                <i class="el-icon-copy-document" />反选
+              </el-button>
+          </div>
+          <div class="select_list">
+              <el-option
+                  v-for="i in item.option"
+                  :key="i[`${item.optionKey}`]"
+                  :label="i[`${item.optionLabel}`]"
+                  :value="i"
+              >
+              </el-option>
+          </div>
+        </el-select>
+    </el-form-item>
+</el-col>
+
+// 全选操作
+selectAll(option, value) {
+          this.addForm[`${value}`] = []
+          option.map(item => {
+              if (!this.addForm[`${value}`].includes(item[`${value}`])) {
+                  this.addForm[`${value}`].push(item)
+              }
+          })
+},
+// 清空操作
+removeTag(value) {
+          this.addForm[`${value}`] = []
+},
+// 反选操作
+selectReverse(option, value) {
+          const val = []
+          option.map(item => {
+              let num = 0
+              //判断现有选中数据是否包含如果不包含则进行反选数据
+              this.addForm[`${value}`].forEach(element => {
+                  if (element[`${value}`] == item[`${value}`]) {
+                      num++
+                  }
+              })
+              if (num == 0) {
+                  val.push(item)
+              }
+          })
+          this.addForm[`${value}`] = val
+}
+
+// 按钮样式
+.el-select-dropdown__list {
+    height: 100%;
+    overflow: hidden;
+}
+.select_up {
+    font-size: 14px;
+    position: absolute;
+    z-index: 99999;
+    background-color: white;
+    top: 0px;
+    width: 100%;
+    border-radius: 5px 5px 0 0;
+    ::v-deep .el-button {
+        color: #bcbcbc;
+        font-size: 14px;
+        i {
+            font-size: 14px;
+        }
+    }
+    ::v-deep .el-button:hover {
+        color: #409eff;
+    }
+    .el-button + .el-button {
+        margin-left: 6px;
+    }
+}
+.select_list {
+    margin-top: 25px;
+}
+```
+
