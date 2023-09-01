@@ -1048,6 +1048,8 @@ selectReverse(option, value) {
 
 ## 16、el-table修改table expand展开行的图标以及动效
 
+参考：[vue element 修改table expand展开行的图标以及动效](https://blog.csdn.net/a83370892/article/details/114141439)
+
 ### 16.1、效果图
 
 ![img](https://cdn.staticaly.com/gh/Sherlock-Homles/gallery@main/1693562154624.1qxnzhicbbe.webp)
@@ -1056,20 +1058,20 @@ selectReverse(option, value) {
 
 ```css
 <style>
-.el-table .el-table__expand-icon {
-    float: left;
-    color: #409eff;
-}
+/*修改展开按钮的样式 start*/
+/*1.取消原本展开的旋转动效*/
 .el-table__expand-icon {
     -webkit-transform: rotate(0deg);
     transform: rotate(0deg);
 }
+/*2.展开按钮未点击的样式是加号带边框*/
 .el-table__expand-icon .el-icon-arrow-right:before {
     content: '\e6d9';
     border: 1px solid #409eff;
     padding: 1px;
     font-weight: bold !important;
 }
+/*3.展开按钮点击后的样式是减号带边框*/
 .el-table__expand-icon--expanded .el-icon-arrow-right:before {
     content: '\e6d8';
     font-weight: bold !important;
