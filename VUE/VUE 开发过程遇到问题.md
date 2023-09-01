@@ -1046,3 +1046,34 @@ selectReverse(option, value) {
 }
 ```
 
+## 16、el-table修改table expand展开行的图标以及动效
+
+### 16.1、效果图
+
+![img](https://cdn.staticaly.com/gh/Sherlock-Homles/gallery@main/1693562154624.1qxnzhicbbe.webp)
+
+### 16.2、css样式代码
+
+```css
+<style>
+.el-table .el-table__expand-icon {
+    float: left;
+    color: #409eff;
+}
+.el-table__expand-icon {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+}
+.el-table__expand-icon .el-icon-arrow-right:before {
+    content: '\e6d9';
+    border: 1px solid #409eff;
+    padding: 1px;
+    font-weight: bold !important;
+}
+.el-table__expand-icon--expanded .el-icon-arrow-right:before {
+    content: '\e6d8';
+    font-weight: bold !important;
+}
+</style>
+```
+
