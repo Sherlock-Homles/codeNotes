@@ -1079,3 +1079,38 @@ selectReverse(option, value) {
 </style>
 ```
 
+## 17、el-table树形表格实现复选框多选效果
+
+当使用树形结构表格需要进行多选功能操作的时候会发现点击全选的时候，只有一级表格数据会被选中。需要实现的是点击全选，不管是几级表格数据都可以被选中。实现如下：
+
+```html
+ <el-table 
+           :data="typeList" 
+           :key="curryId"  
+           row-key="id"              
+           :tree-props="{children: 'children', hasChildren: 'hasChildren'}"              
+           ref="table"              
+           @selection-change="selection_all_operation_record"              
+           @select-all="handleSelectAll">
+</el-table>
+```
+
+```javascript
+methods:{
+    handleSelectAll() {
+        for (let item of this.typeList) {
+            this.selectChildren(item)
+        }
+    },
+    selectChildren(item) {
+        if (item.children != null) {
+            for (let childItem of item.children) {
+                this.selectChildren(childItem)
+                this.$refs.table.toggleRowSelection(childItem)
+            }
+        }
+    }
+}
+```
+
+原理：通过递归的方式来给每一层数据都可以被选中。
