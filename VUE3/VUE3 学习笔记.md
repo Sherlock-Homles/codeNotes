@@ -48,7 +48,7 @@ pnpm create vite vite3-vue3 -- --template vue
 
 ![img](https://cdn.staticaly.com/gh/Sherlock-Homles/gallery@main/1693996221191.3nx8bd9u2660.webp)
 
-## 2、工程文件解析
+## 2、工程文件解析和基本配置
 
 ### 2.1、main.ts 入口文件
 
@@ -67,7 +67,7 @@ app.mount('#app')
 
 ![img](https://cdn.staticaly.com/gh/Sherlock-Homles/gallery@main/image.3nju8hxc8dm0.webp)
 
-### 2.2、集成 eslint 语法检查插件
+### 2.2、配置 eslint
 
 安装 eslint
 
@@ -87,7 +87,7 @@ npx eslint --init
 "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix"
 ```
 
-### 2.3、集成prettier
+### 2.3、配置 prettier
 
 安装prettier
 
@@ -117,7 +117,163 @@ export const bracketSpacing = true;
 }
 ```
 
-### 2.4、配置 husky
+### 2.4、配置 styleling
+
+stylelint为css的lint工具。可格式化css代码，检查css语法错误与不合理的写法，指定css书写顺序等。
+
+安装styleling
+
+```shell
+pnpm add stylelint postcss postcss-less postcss-html stylelint-config-prettier stylelint-config-recommended-less stylelint-config-standard stylelint-config-standard-vue stylelint-less stylelint-order -D
+```
+
+依赖说明
+
+- [stylelint](https://link.juejin.cn?target=https%3A%2F%2Fstylelint.io%2F): `css`样式lint工具
+- [postcss](https://link.juejin.cn?target=https%3A%2F%2Fwww.postcss.com.cn%2F): 转换`css`代码工具
+- [postcss-less](https://link.juejin.cn?target=https%3A%2F%2Fgithub.com%2Fshellscape%2Fpostcss-less): 识别`less`语法
+- [postcss-html](https://link.juejin.cn?target=https%3A%2F%2Fgithub.com%2Fgucong3000%2Fpostcss-html): 识别html/vue 中的`<style></style>`标签中的样式
+- [stylelint-config-standard](https://link.juejin.cn?target=https%3A%2F%2Fgithub.com%2Fstylelint%2Fstylelint-config-standard): `Stylelint`的标准可共享配置规则，详细可查看官方文档
+- [stylelint-config-prettier](https://link.juejin.cn?target=https%3A%2F%2Fgithub.com%2Fprettier%2Fstylelint-config-prettier): 关闭所有不必要或可能与`Prettier`冲突的规则
+- [stylelint-config-recommended-less](https://link.juejin.cn?target=https%3A%2F%2Fgithub.com%2Fssivanatarajan%2Fstylelint-config-recommended-less): `less`的推荐可共享配置规则，详细可查看官方文档
+- [stylelint-config-standard-vue](https://link.juejin.cn?target=https%3A%2F%2Fgithub.com%2Fota-meshi%2Fstylelint-config-standard-vue): lint`.vue`文件的样式配置
+- [stylelint-less](https://link.juejin.cn?target=https%3A%2F%2Fgithub.com%2Fssivanatarajan%2Fstylelint-less): `stylelint-config-recommended-less`的依赖，`less`的`stylelint`规则集合
+- [stylelint-order](https://link.juejin.cn?target=https%3A%2F%2Fgithub.com%2Fhudochenkov%2Fstylelint-order): 指定样式书写的顺序，在`.stylelintrc.js`中`order/properties-order`指定顺序
+
+增加`.stylelintrc.js`配置文件
+
+```javascript
+module.exports = {
+  extends: [
+    'stylelint-config-standard',
+    'stylelint-config-prettier',
+    'stylelint-config-recommended-less',
+    'stylelint-config-standard-vue'
+  ],
+  plugins: ['stylelint-order'],
+  // 不同格式的文件指定自定义语法
+  overrides: [
+    {
+      files: ['**/*.(less|css|vue|html)'],
+      customSyntax: 'postcss-less'
+    },
+    {
+      files: ['**/*.(html|vue)'],
+      customSyntax: 'postcss-html'
+    }
+  ],
+  ignoreFiles: [
+    '**/*.js',
+    '**/*.jsx',
+    '**/*.tsx',
+    '**/*.ts',
+    '**/*.json',
+    '**/*.md',
+    '**/*.yaml'
+  ],
+  rules: {
+    'no-descending-specificity': null, // 禁止在具有较高优先级的选择器后出现被其覆盖的较低优先级的选择器
+    'selector-pseudo-element-no-unknown': [
+      true,
+      {
+        ignorePseudoElements: ['v-deep']
+      }
+    ],
+    'selector-pseudo-class-no-unknown': [
+      true,
+      {
+        ignorePseudoClasses: ['deep']
+      }
+    ],
+    // 指定样式的排序
+    'order/properties-order': [
+      'position',
+      'top',
+      'right',
+      'bottom',
+      'left',
+      'z-index',
+      'display',
+      'justify-content',
+      'align-items',
+      'float',
+      'clear',
+      'overflow',
+      'overflow-x',
+      'overflow-y',
+      'padding',
+      'padding-top',
+      'padding-right',
+      'padding-bottom',
+      'padding-left',
+      'margin',
+      'margin-top',
+      'margin-right',
+      'margin-bottom',
+      'margin-left',
+      'width',
+      'min-width',
+      'max-width',
+      'height',
+      'min-height',
+      'max-height',
+      'font-size',
+      'font-family',
+      'text-align',
+      'text-justify',
+      'text-indent',
+      'text-overflow',
+      'text-decoration',
+      'white-space',
+      'color',
+      'background',
+      'background-position',
+      'background-repeat',
+      'background-size',
+      'background-color',
+      'background-clip',
+      'border',
+      'border-style',
+      'border-width',
+      'border-color',
+      'border-top-style',
+      'border-top-width',
+      'border-top-color',
+      'border-right-style',
+      'border-right-width',
+      'border-right-color',
+      'border-bottom-style',
+      'border-bottom-width',
+      'border-bottom-color',
+      'border-left-style',
+      'border-left-width',
+      'border-left-color',
+      'border-radius',
+      'opacity',
+      'filter',
+      'list-style',
+      'outline',
+      'visibility',
+      'box-shadow',
+      'text-shadow',
+      'resize',
+      'transition'
+    ]
+  }
+}
+```
+
+在`package.json`中的`script`中添加以下命令
+
+```json
+{
+    "scripts": {
+        "lint:style": "stylelint \"./**/*.{css,less,vue,html}\" --fix"
+    }
+}
+```
+
+### 2.5、配置 husky
 
 虽然上面已经配置好了`eslint`、`preitter`与`stylelint`，但是还是存在以下问题。对于不使用`vscode`的，或者没有安装`eslint`、`preitter`与`stylelint`插件的同学来说，就不能实现在保存的时候自动的去修复与和格式化代码。这样提交到`git`仓库的代码还是不符合要求的。因此需要引入强制的手段来保证提交到`git`仓库的代码时符合我们的要求的。
 
@@ -158,7 +314,7 @@ pnpm lint && pnpm format
 
 现在当我们执行`git commit`的时候就会执行`pnpm lint`与`pnpm format`，当这两条命令出现报错，就不会提交成功。以此来保证提交代码的质量和格式。
 
-### 2.3、集成Element Plus组件库
+### 2.6、配置 Element Plus 组件库
 
 安装Element Plus
 
@@ -225,6 +381,72 @@ export default defineConfig({
     /* Element Plus */
     "types": ["element-plus/global"]
   }
+}
+```
+
+### 2.7、配置 vue-router 路由
+
+安装Vue-Router最新版本
+
+```shell
+pnpm i vue-router@next -S
+```
+
+创建``router``文件夹``index.js``
+
+```typescript
+import { createRouter, createWebHashHistory } from 'vue-router'
+import Home from '../views/home/index.vue'
+import Login from '../views/login/indedx.vue'
+
+const routes = [
+  { name: 'home', path: '/', component: Home },
+  { name: 'login', path: '/login', component: Login },
+]
+
+const router = createRouter({
+  history: createWebHashHistory(), //路由模式
+  routes: routes,
+})
+
+// 导航守卫
+export default router
+```
+
+在``main.js``中引入
+
+```typescript
+// 引入vue-router
+import router from './router'
+app.use(router)
+```
+
+在``app.vue``中写好路由容器
+
+```vue
+<script setup lang="ts"></script>
+
+<template>
+  <router-view></router-view>
+</template>
+
+<style scoped></style>
+```
+
+遇到的问题
+
+错误：找不到模块“@/views/login/index.vue”或其相应的类型声明。ts(2307)
+
+``src/vite-env.d.ts``
+
+```typescript
+/// <reference types="vite/client" />
+// 配置这个文件是 解决错误：找不到模块“@/views/login/index.vue”或其相应的类型声明。ts(2307)
+// 这段代码告诉 TypeScript，所有以 .vue 结尾的文件都是 Vue 组件，可以通过 import 语句进行导入。这样做通常可以解决无法识别模块的问题。
+declare module '*.vue' {
+  import { Component } from 'vue'
+  const component: Component
+  export default component
 }
 ```
 
