@@ -386,7 +386,7 @@ export default defineConfig({
 
 ### 2.7、配置 vue-router 路由
 
-安装Vue-Router最新版本
+#### 2.7.1、安装Vue-Router最新版本
 
 ```shell
 pnpm i vue-router@next -S
@@ -433,7 +433,7 @@ app.use(router)
 <style scoped></style>
 ```
 
-遇到的问题
+#### 2.7.2、遇到的问题
 
 错误：找不到模块“@/views/login/index.vue”或其相应的类型声明。ts(2307)
 
@@ -447,6 +447,82 @@ declare module '*.vue' {
   import { Component } from 'vue'
   const component: Component
   export default component
+}
+```
+
+#### 2.7.3、页面中的路由跳转
+
+``homeIndex.vue``
+
+```vue
+<script setup lang="ts">
+import { useRouter } from 'vue-router'
+const text = 'welcome home!'
+const router = useRouter()
+const toLogin = () => {
+  router.push('/login')
+}
+</script>
+
+<template>
+  <div class="buttonBox">
+    <el-button type="primary" plain @click="toLogin">登 录</el-button>
+    <el-button type="primary" plain>注 册</el-button>
+  </div>
+  <div>{{ text }}</div>
+</template>
+
+<style scoped>
+.read-the-docs {
+  color: #888;
+}
+</style>
+```
+
+### 2.8、配置“@“绝对路径
+
+在Vue2的时候项目中@路径可以直接使用，不需要额外配置，但是Vue3中却需要手动配置。
+
+#### 2.8.1、需要用到node其中的path模块和__dirname
+
+```shell
+pnpm i @types/node --save-dev
+```
+
+#### 2.8.2、在vite.config.ts文件中进行配置
+
+```typescript
+// 引入path
+import path from 'path'
+// https://vitejs.dev/config/
+export default defineConfig({
+  ···
+  /* 路径配置 */
+  resolve: {
+    alias: {
+      '@': path.join(__dirname, './src'),
+    },
+  },
+})
+```
+
+#### 2.8.3、配置是解决TS不识别@的问题
+
+``tsconfig.json``
+
+```json
+{
+  "compilerOptions": {
+    ···
+    /* 解决深层获取不到路径的问题 */
+    // "noImplicitAny": false,
+    "allowJs": true,
+    "baseUrl": "./",
+    "paths": {
+      // @ 路径配置
+      "@/*": ["src/*"]
+    }
+  }
 }
 ```
 
