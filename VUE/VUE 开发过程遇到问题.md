@@ -1114,3 +1114,32 @@ methods:{
 ```
 
 原理：通过递归的方式来给每一层数据都可以被选中。
+
+## 18、输入所选年月获取当月第一天和最后一天
+
+```javascript
+// 方法
+getDay(time) {
+   var date = new Date(time)
+   var new_year = date.getFullYear() // 取当前的年份
+   var month = date.getMonth()
+   var nextMonth = month + 1
+   var firstDay = new Date(new_year, month, 1) // 取当年当月中的第一天
+   var NextMonthFirstDay = new Date(new_year, nextMonth, 1) // 取下个月中的第一天
+   var lastDay = new Date(NextMonthFirstDay.getTime() - 1000 * 60 * 60 * 24).getDate() // 获取当月最后一天日期
+   var mon = ''
+   if (firstDay.getMonth() < 9) {
+       mon = '0' + (firstDay.getMonth() + 1)
+   } else {
+       mon = firstDay.getMonth() + 1
+   }
+   var startDate = firstDay.getFullYear() + '-' + mon + '-' + '0' + firstDay.getDate()
+   var endDate = firstDay.getFullYear() + '-' + mon + '-' + lastDay
+   return [startDate, endDate]
+}
+// 使用
+colsole.log(this.getDay('2023-12'))
+// 输出
+['2023-12-01', '2023-12-31']
+```
+
