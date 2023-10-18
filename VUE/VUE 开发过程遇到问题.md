@@ -1143,3 +1143,29 @@ colsole.log(this.getDay('2023-12'))
 ['2023-12-01', '2023-12-31']
 ```
 
+## 19、CSS 获取屏幕高度
+
+```css
+/* 方法一：使用100vh单位 */
+.full-screen {
+height: 100vh;
+}
+/* 方法二：使用calc()函数 */
+.full-screen {
+height: calc(100vh - 80px); /* 80px为非全屏元素的高度 */
+}
+```
+
+第一种方法使用了CSS3新增的Viewport单位——vh（View Height），它表示相对于整个视口高度的百分比。100vh就是整个视口的高度。
+
+第二种方法使用了calc()函数，它可以进行数学运算和单位转换。
+
+```javascript
+/* 方法三：使用JavaScript获取屏幕高度 */
+var screenHeight = window.innerHeight;
+document.querySelector('.full-screen').style.height = `${screenHeight}px`;
+```
+
+需要注意的是，vh单位和calc()函数都有兼容性问题，不同浏览器的支持程度也不同。所以在实际开发中，我们可能需要使用JavaScript来获取屏幕高度，然后通过CSS动态设置元素高度。
+
+上面的代码使用了JavaScript中的innerHeight属性来获取屏幕高度，并将其转换为像素值，然后通过querySelector方法来获取需要设置的元素，最后将高度值用字符串模板填入style中。
