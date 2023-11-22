@@ -1169,3 +1169,47 @@ document.querySelector('.full-screen').style.height = `${screenHeight}px`;
 需要注意的是，vh单位和calc()函数都有兼容性问题，不同浏览器的支持程度也不同。所以在实际开发中，我们可能需要使用JavaScript来获取屏幕高度，然后通过CSS动态设置元素高度。
 
 上面的代码使用了JavaScript中的innerHeight属性来获取屏幕高度，并将其转换为像素值，然后通过querySelector方法来获取需要设置的元素，最后将高度值用字符串模板填入style中。
+
+## 20、el-tree数据回显以及回显后的节点置灰（不可操作）
+
+```javascript
+        <el-tree
+            :data="treeData"
+            show-checkbox
+            node-key="id"
+            ref="tree"
+            default-expand-all
+        ></el-tree>
+		// 获取已绑定部门
+        getBindDept() {
+            const param = {
+                projectId: this.projectId
+            }
+            bindDept(param).then(response => {
+                const bindIds = []
+                response.data.data.forEach(item => {
+                    bindIds.push(item.deptId)
+                })
+                const treeRef = this.$refs.tree
+                // 回显已绑定的部门数据
+                treeRef.setCheckedKeys(bindIds)
+                if (treeRef) {
+                    const treeStore = treeRef.store || {}
+                    const treeNodesMap = treeStore.nodesMap || {} //tree node集合
+                    Object.keys(treeNodesMap).forEach(key => {
+                        const item = treeNodesMap[key] || {}
+                        // 判断已勾选的节点不可操作
+                        if (bindIds.includes(Number(item.key))) {
+                            // 更新未勾选的复选框的禁选状态
+                            const data = item.data || {}
+                            data.disabled = true
+                            treeRef.setCurrentNode(data)
+                        }
+                    })
+                }
+            })
+        },
+```
+
+效果图：![](https://raw.githubusercontent.com/Sherlock-Homles/gallery/main/1700632801369.6s4pt0ik7bo0.webp)
+
