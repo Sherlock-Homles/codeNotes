@@ -140,3 +140,176 @@ docker pull oguricap/oybl
 ### 2.4、推送成功
 
 ![img](https://raw.githubusercontent.com/Sherlock-Homles/gallery/main/1701070738128.1mbnvh3byekg.png)
+
+## 3、k8s镜像拉取配置
+
+> 地址：http://k8s.oybl.thundersdata.com:1480/#!/deployment?namespace=high-speed
+
+![](https://raw.githubusercontent.com/Sherlock-Homles/gallery/main/1701742609145.tv587abcws0.png)
+
+![](https://github.com/Sherlock-Homles/gallery/raw/main/1701742786963.6s6ais0dz9o0.webp)
+
+配置文件
+
+```json
+{
+  "kind": "Deployment",
+  "apiVersion": "extensions/v1beta1",
+  "metadata": {
+    "name": "eurasia-logistics-screen",
+    "namespace": "high-speed",
+    "selfLink": "/apis/extensions/v1beta1/namespaces/high-speed/deployments/eurasia-logistics-screen",
+    "uid": "db875c95-21fb-11ed-a090-00163e0100b2",
+    "resourceVersion": "169248918",
+    "generation": 85,
+    "creationTimestamp": "2022-08-22T09:21:52Z",
+    "labels": {
+      "app": "eurasia-logistics-screen",
+      "k8s-app": "eurasia-logistics-screen"
+    },
+    "annotations": {
+      "deployment.kubernetes.io/revision": "85"
+    }
+  },
+  "spec": {
+    "replicas": 1,
+    "selector": {
+      "matchLabels": {
+        "app": "eurasia-logistics-screen",
+        "k8s-app": "eurasia-logistics-screen"
+      }
+    },
+    "template": {
+      "metadata": {
+        "creationTimestamp": null,
+        "labels": {
+          "app": "eurasia-logistics-screen",
+          "k8s-app": "eurasia-logistics-screen"
+        },
+        "annotations": {
+          "deployment.create.timestamp": "1699502782084",
+          "sidecar.istio.io/inject": "false"
+        }
+      },
+      "spec": {
+        "containers": [
+          {
+            "name": "eurasia-logistics-screen",
+            "image": "oguricap/oybl-small:v1.0",
+            "ports": [
+              {
+                "containerPort": 80,
+                "protocol": "TCP"
+              }
+            ],
+            "env": [
+              {
+                "name": "APP_INFO_APP_NAME",
+                "value": "eurasia-logistics-screen"
+              },
+              {
+                "name": "ELASTIC_APM_APPLICATION_PACKAGES",
+                "value": "com.thundersdata"
+              },
+              {
+                "name": "APP_SECRET_AES_KEY",
+                "value": "I/nW6vQTnDX7mPlP4HyD3rPgYAiJ4Gc49myJV3/aujpxoedHD/ZfoeM11xvAc3EL0T2sPqI8q9W0cQoc3A3wokRy+OOB/DorzRkzHpKPhXWD5yDDvw51iQsmEoKO8HNSFB42X7RuefH1ADfZYjsN/lhNNgIvZrXskJawUeHApgfcL8aPexCQH4xAkqYLEfIWshkjf5N7+M4Lub6x5VLpDFgv6WyEkeg/H6NtUTKSrnt3MMtvEIp6bp7Fj4cO3IAg7bgzGnnWxSE8Tn3y5BoBz06EpP5XhUXW53+1/RkGS2zdtsIQPMgObw2sWPRk/+dnZ0TpYDw4kph7Ru1OiqD7sg=="
+              },
+              {
+                "name": "ELASTIC_APM_SERVER_URLS",
+                "value": "http://apm-server.elk:8200"
+              },
+              {
+                "name": "SPRING_PROFILES_ACTIVE",
+                "value": "prod"
+              },
+              {
+                "name": "APP_INFO_PROJECT_NAME",
+                "value": "high-speed"
+              },
+              {
+                "name": "APP_INFO_PROFILE",
+                "value": "prod"
+              },
+              {
+                "name": "ELASTIC_APM_DISABLE_INSTRUMENTATIONS"
+              },
+              {
+                "name": "APP_INFO_CLUSTER_NAME",
+                "value": "oybl"
+              },
+              {
+                "name": "ELASTIC_APM_SERVICE_NAME",
+                "value": "high-speed_eurasia-logistics-screen"
+              },
+              {
+                "name": "APP_SECRET_TOKEN",
+                "value": "E82B585F43F611E95942974A0E0B3858805503FA763FC589EAA14CB0013D2086451A0E46B805763568C99186F3E733F766A763EB0773ABB5498986D76F075425AFCADBC88884582AFA42A457293C32100EBE2C21420CB7BED7AFB85EAD5D2BC0A1C7BC78EF1BBF457BA6D8311FEEBE0D0342D7367B7717AABBC4848533660344C4F431A6C0FDC576ABE8E1F88ABD6881891DC9FFE176D67A81BAB2F325E0B8D4"
+              },
+              {
+                "name": "MY_POD_IP",
+                "valueFrom": {
+                  "fieldRef": {
+                    "apiVersion": "v1",
+                    "fieldPath": "status.podIP"
+                  }
+                }
+              }
+            ],
+            "resources": {
+              "limits": {
+                "cpu": "100m",
+                "memory": "500Mi"
+              },
+              "requests": {
+                "cpu": "50m",
+                "memory": "125Mi"
+              }
+            },
+            "terminationMessagePath": "/dev/termination-log",
+            "terminationMessagePolicy": "File",
+            "imagePullPolicy": "Always"
+          }
+        ],
+        "restartPolicy": "Always",
+        "terminationGracePeriodSeconds": 30,
+        "dnsPolicy": "ClusterFirst",
+        "securityContext": {},
+        "imagePullSecrets": [
+          {
+            "name": "regsecret-genergydata"
+          }
+        ],
+        "schedulerName": "default-scheduler"
+      }
+    },
+    "strategy": {
+      "type": "RollingUpdate",
+      "rollingUpdate": {
+        "maxUnavailable": 1,
+        "maxSurge": 1
+      }
+    },
+    "revisionHistoryLimit": 2147483647,
+    "progressDeadlineSeconds": 2147483647
+  },
+  "status": {
+    "observedGeneration": 85,
+    "replicas": 1,
+    "updatedReplicas": 1,
+    "readyReplicas": 1,
+    "availableReplicas": 1,
+    "conditions": [
+      {
+        "type": "Available",
+        "status": "True",
+        "lastUpdateTime": "2022-08-22T09:21:52Z",
+        "lastTransitionTime": "2022-08-22T09:21:52Z",
+        "reason": "MinimumReplicasAvailable",
+        "message": "Deployment has minimum availability."
+      }
+    ]
+  }
+}
+```
+
