@@ -6,6 +6,8 @@
 
 ![img](https://github.com/Sherlock-Homles/gallery/raw/main/1701071257922.4glizvmlrq80.webp)
 
+![](https://raw.githubusercontent.com/Sherlock-Homles/gallery/main/1702000905407.pvl1rvdl3z4.webp)
+
 ## 2、构建步骤
 
 ### 2.1、项目打包及配置文件
@@ -134,7 +136,7 @@ https://docs.docker.com/engine/reference/commandline/login/#credentials-store
 docker tag oybl-big-image oguricap/oybl:v1.0
 
 // 推送到DockerHub镜像仓库
-docker pull oguricap/oybl
+docker push oguricap/oybl:v1.0
 ```
 
 ### 2.4、推送成功
