@@ -1295,3 +1295,93 @@ export default {
 </style>
 ```
 
+## 22、vue展开收起元素，有过渡效果
+
+> 问题：解决dom元素展开时出现闪动的问题
+
+![](https://raw.githubusercontent.com/Sherlock-Homles/gallery/main/image.6ete1ss3lrc.webp)
+
+新建``collapseTransition.js``
+
+```javascript
+const elTransition = '1s height ease-in-out, 1s padding-top ease-in-out, 1s padding-bottom ease-in-out';
+const Transition = {
+    'before-enter'(el) {
+        el.style.transition = elTransition;
+        if (!el.dataset) el.dataset = {};
+        el.dataset.oldPaddingTop = el.style.paddingTop;
+        el.dataset.oldPaddingBottom = el.style.paddingBottom;
+        el.style.height = 0;
+        el.style.paddingTop = 0;
+        el.style.paddingBottom = 0;
+    },
+    enter(el) {
+        el.dataset.oldOverflow = el.style.overflow;
+        if (el.scrollHeight !== 0) {
+            el.style.height = el.scrollHeight + 'px';
+            el.style.paddingTop = el.dataset.oldPaddingTop;
+            el.style.paddingBottom = el.dataset.oldPaddingBottom;
+        } else {
+            el.style.height = '';
+            el.style.paddingTop = el.dataset.oldPaddingTop;
+            el.style.paddingBottom = el.dataset.oldPaddingBottom;
+        }
+        el.style.overflow = 'hidden';
+    },
+    'after-enter'(el) {
+        el.style.transition = '';
+        el.style.height = '';
+        el.style.overflow = el.dataset.oldOverflow;
+    },
+    'before-leave'(el) {
+        if (!el.dataset) el.dataset = {};
+        el.dataset.oldPaddingTop = el.style.paddingTop;
+        el.dataset.oldPaddingBottom = el.style.paddingBottom;
+        el.dataset.oldOverflow = el.style.overflow;
+ 
+        el.style.height = el.scrollHeight + 'px';
+        el.style.overflow = 'hidden';
+    },
+    leave(el) {
+        if (el.scrollHeight !== 0) {
+            el.style.transition = elTransition;
+            el.style.height = 0;
+            el.style.paddingTop = 0;
+            el.style.paddingBottom = 0;
+        }
+    },
+    'after-leave'(el) {
+        el.style.transition = '';
+        el.style.height = '';
+        el.style.overflow = el.dataset.oldOverflow;
+        el.style.paddingTop = el.dataset.oldPaddingTop;
+        el.style.paddingBottom = el.dataset.oldPaddingBottom;
+    }
+};
+export default {
+    name: 'collapseTransition',
+    functional: true,
+    render(h, {children}) {
+        const data = {
+            on: Transition
+        };
+        return h('transition', data, children);
+    }
+};
+```
+
+在使用的页面内引用
+
+```javascript
+import collapseTransition from '../collapseTransition.js';
+```
+
+页面中使用，通过修改topShow的true和false来达到效果
+
+```vue
+<collapseTransition> 
+    <div v-show="topShow"> 
+    </div> 
+</collapseTransition> 
+```
+
