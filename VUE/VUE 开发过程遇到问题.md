@@ -1213,3 +1213,85 @@ document.querySelector('.full-screen').style.height = `${screenHeight}px`;
 
 效果图：![](https://raw.githubusercontent.com/Sherlock-Homles/gallery/main/1700632801369.6s4pt0ik7bo0.webp)
 
+## 21、el-table点击某一行的任意位置就勾选上
+
+```vue
+<!-- signType判断单选还是多选（1.单选，2.多选）,单选conceal-btn去除左上角的全选按钮 -->
+<el-table 
+    :class="signType=== '1'?'conceal-btn':''" 
+    :data="userList" 
+    @selection-change="handleSelectionChange" 
+    @row-click="clickRow"
+    ref="multipleTable"  
+    stripe 
+    :header-cell-style="{ background: '#FAFAFA'}">
+      <el-table-column
+        type="selection"
+        width="55">
+      </el-table-column>
+</el-table>
+<script>
+export default {
+    props: {
+        signType: {
+          type: String,
+          required: false
+        }
+    },
+    data(){
+        return {
+            selectList:[],
+        }
+    },
+    methods:{
+        handleSelectionChange(val) {
+            this.selectList = val
+            if (val.length > 1 && this.signType === '1') {
+                this.$refs.multipleTable.clearSelection();
+                this.$refs.multipleTable.toggleRowSelection(val.pop());
+            }
+        },
+        // 点击一行时选中
+        clickRow(row){
+           if(this.signType === '1'){
+              // 单选选中行
+              if (this.selectList[0] == row) {
+                // 取消
+                this.selectList = [];
+                this.$refs.multipleTable.clearSelection();
+              } else {
+                // 选择
+                this.selectList = [row];
+                this.$refs.multipleTable.clearSelection();
+                this.$refs.multipleTable.toggleRowSelection(row, true);
+            }
+         }else{
+             // 多选选中行
+             // 根据id判断当前点击的是否被选中
+             const selected = this.selectList.some(item => item.id === row.id)
+             if (!selected) {
+                // 选择
+                this.selectList.push(row)
+                this.$refs.multipleTable.toggleRowSelection(row, true);
+             } else {
+                // 取消
+                var finalArr = this.selectList.filter((item) => {
+                  return item.id !== row.id
+                })
+                // 取消后剩余选中的
+                this.selectList = finalArr  
+                this.$refs.multipleTable.toggleRowSelection(row, false);
+             }
+          }
+        },
+    }
+}
+</script>
+<style>
+// 将全选项隐藏
+.conceal-btn thead .el-table-column--selection .cell {
+    display: none;
+}
+</style>
+```
+
