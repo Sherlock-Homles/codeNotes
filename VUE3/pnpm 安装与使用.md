@@ -32,13 +32,13 @@ npm i pnpm -g
 
 ### 八、升级版本
 
-pnpm add -g pnpm to update 
+pnpm add -g pnpm to update
 
 ### 九、设置源
 
 pnpm config get registry // 查看源
 
-pnpm config set registry https://registry.npmmirror.com // 切换淘宝源 
+pnpm config set registry https://registry.npmmirror.com // 切换淘宝源
 
 ![img](https://img-blog.csdnimg.cn/e55740b3fccb4e64841b84fdada92caa.png)
 
@@ -52,7 +52,7 @@ pnpm run dev
 
 ### 十二、pnpm-workspace 实现单一代码库
 
-[架构 - 单一代码库 - monorepo-pnpm-workspace：基本使用_snow@li 的博客 - CSDN 博客](https://blog.csdn.net/snowball_li/article/details/129699389)
+[架构 - 单一代码库 - monorepo-pnpm-workspace：基本使用\_snow@li 的博客 - CSDN 博客](https://blog.csdn.net/snowball_li/article/details/129699389)
 
 ### 十三、相关记录
 
@@ -68,7 +68,7 @@ pnpm run dev
 shamefully-hoist = true
 ```
 
-删除 node_modules，再次执行 pnpm install ，解决成功 
+删除 node_modules，再次执行 pnpm install ，解决成功
 
 有些包仅在根目录的 node_modules 时才有效，可以通过此配置，提升那些不在 node_modules 根目录的包。
 
@@ -76,7 +76,7 @@ shamefully-hoist = true
 
 pnpm i --shamefully-hoist
 
-两种方法均测试成功。 
+两种方法均测试成功。
 
 ### 十四、参考链接
 
@@ -84,8 +84,81 @@ pnpm i --shamefully-hoist
 
 [百度安全验证](https://baijiahao.baidu.com/s?id=1712299680972583580&wfr=spider&for=pc)
 
-[pnpm 简述_一只小白菜~ 的博客 - CSDN 博客_pnpm](https://blog.csdn.net/weixin_43106777/article/details/121745882)
+[pnpm 简述\_一只小白菜~ 的博客 - CSDN 博客\_pnpm](https://blog.csdn.net/weixin_43106777/article/details/121745882)
 
-[pnpm 使用教程_小沈曰的博客 - CSDN 博客_pnpm 使用](https://blog.csdn.net/shentian885/article/details/122237746)
+[pnpm 使用教程\_小沈曰的博客 - CSDN 博客\_pnpm 使用](https://blog.csdn.net/shentian885/article/details/122237746)
 
 [Vite+TS 带你搭建一个属于自己的 Vue3 组件库 - 哔哩哔哩](https://www.bilibili.com/read/cv17485496)
+
+### 十五、设置全局包的安装路径
+
+在使用[PNPM](https://link.juejin.cn/?target=https%3A%2F%2Fpnpm.io 'https://pnpm.io')默认的全局配置时，它会在系统盘存储你全局安装的 NPM 包，使用久了，安装全局的包多了，自然就会占用很多系统盘的存储空间，对于给系统盘分配较小的存储空间的小伙伴是不太友好的，而且重装系统时也同样会被格式化。 在安装 PNPM 时给它改变全局安装的位置，让系统盘的做它应该做的事
+
+#### 配置
+
+主要分为 2 个步骤：
+
+1. 配置 PNPM 全局安装路径
+2. 配置 PNPM 环境变量
+3. 加载配置
+
+#### 配置 PNPM 全局安装路径
+
+在 pnpm 的配置文件中配置以下配置:
+
+1. 配置 PNPM 全局安装路径
+2. 配置 PNPM 全局 bin 文件安装路径
+3. 配置 PNPM cache 路径
+4. 配置 PNPM state 路径
+
+把 `E:\.pnpm-store`替换成 PNP 全局安装的路径
+
+```powershell
+pnpm config set global-bin-dir "E:\.pnpm-store"
+pnpm config set cache-dir "E:\.pnpm-store\cache"
+pnpm config set state-dir "E:\.pnpm-store\state"
+pnpm config set global-dir "E:\.pnpm-store\global"
+```
+
+OR：
+
+修改 `C:\Users\<User>\AppData\Local\pnpm\config\rc`或者 `C:\Users\<User>\.npmrc`文件： 把 `F:\.pnpm-store`替换成 PNP 全局安装的路径
+
+```json
+global-bin-dir=F:\.pnpm-store
+cache-dir=F:\.pnpm-store\cache
+state-dir=F:\.pnpm-store\state
+global-dir=F:\.pnpm-store\global
+```
+
+#### 验证设置是否正确:
+
+```powershell
+pnpm c get
+```
+
+如果正确则不输入任何内容, 错误时显示格式化 JSON 错误项,修改对应错误即可
+
+#### 配置 PNPM 环境变量
+
+> 给 PNPM 找到你配置的全局安装路径
+
+1. `WIN`+`S`快捷键 -> 编辑系统环境变量 -> 环境变量 -> 新建系统变量
+2. 设置 PNPM 环境变量映射:
+   1. PNPM 仓库名: `PNPM_HOME`
+   2. PNPM global-bin-dir 全局安装路径, 例如: `E:/.pnpm-store`
+3. 系统的 `Path`变量变量添加`%PNPM_HOME%值
+
+#### 加载配置
+
+```powershell
+pnpm setup
+```
+
+#### 检验
+
+测试设置的路径是否是自己设置
+
+```powershell
+pnpm c list
+```
