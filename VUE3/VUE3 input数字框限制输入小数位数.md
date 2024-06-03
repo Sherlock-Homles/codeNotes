@@ -1,3 +1,5 @@
+> 参考：[vue中input框输入大于等于0且保留两位小数，超出的部分无法输入（还有保留一位小数、输入正整数）](https://blog.csdn.net/pipizhou16/article/details/126163092?utm_medium=distribute.pc_relevant.none-task-blog-2~default~baidujs_baidulandingword~default-0-126163092-blog-109772103.235^v43^pc_blog_bottom_relevance_base8&spm=1001.2101.3001.4242.1&utm_relevant_index=3)
+
 ```vue
 <a-input-number
    style="width: 100%"
