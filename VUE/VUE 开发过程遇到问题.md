@@ -1385,3 +1385,76 @@ import collapseTransition from '../collapseTransition.js';
 </collapseTransition> 
 ```
 
+## 23、div标签增加disabled样式
+
+```vue
+<div
+  v-for="(item, index) in bottomList"
+  :key="index"
+  class="item"
+  :class="{ 'div-disabled': item.isEnable == 0 }"
+  @click="handlerClick(item.link)"
+></div>
+
+<style lang="scss" scoped>
+.div-disabled {
+  pointer-events: none;
+}
+</style>
+```
+
+## 24、CSS 实现一个正方形四个边角加粗
+
+![css 实现一个正方形四个边角加粗](https://exp-picture.cdn.bcebos.com/bff8683e21c2bbd6d3b3d95b116186254093aefa.jpg?x-bce-process=image%2Fresize%2Cm_lfit%2Cw_500%2Climit_1%2Fformat%2Cf_auto%2Fquality%2Cq_80)
+
+> 原理：只要弄清position:relative,border和left,top之间的关系就可以了。
+
+```vue
+<div class="completeApp" style="width: 100%">
+	<span class="row row1" />
+    <span class="row row2" />
+    <span class="col col1" />
+    <span class="col col2" />
+</div>
+
+<style lang="scss" scoped>
+ .completeApp {
+    height: 380px;
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid #65e3ac;
+    position: relative;
+    span {
+      position: absolute;
+      padding: 5px;
+      border-style: solid;
+      border-color: #65e3ac;
+    }
+    .row1 {
+      border-width: 5px 0 0 5px;
+      top: -5px;
+      left: -5px;
+    }
+    .row2 {
+      border-width: 5px 5px 0 0;
+      top: -5px;
+      right: -5px;
+    }
+    .col1 {
+      border-width: 0 0 5px 5px;
+      bottom: -5px;
+      left: -5px;
+    }
+    .col2 {
+      border-width: 0 5px 5px 0;
+      bottom: -5px;
+      right: -5px;
+    }
+  }
+</style>
+```
+
+
+
+****
+
