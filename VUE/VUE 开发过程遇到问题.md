@@ -1454,7 +1454,49 @@ import collapseTransition from '../collapseTransition.js';
 </style>
 ```
 
+## 25、关于element-ui的级联选择器数据回显，最后一个选项没有选中的问题。
 
+```javascript
+const data = this.findParentNode(
+	this.buildingList, // 树形结构
+	this.form.houseId  // 回显数据
+)
+this.form.houseId = data
+
+/**
+ * 广度优先
+ * @param arr 
+ * @param id 
+ * @param childrenKey
+ */
+findParentNode(arr, id) {
+	const queue = [
+        {
+            node: arr,
+            path: []
+        }
+	]
+	while (queue.length > 0) {
+		const { node, path } = queue.shift()
+		for (let i = 0; i < node.length; i++) {
+			const item = node[i]
+			const newPath = [...path, item.id]
+			if (item.id == id) {
+				return newPath
+			}
+			if (item.children) {
+				queue.push({
+					node: item.children,
+					path: newPath
+				})
+			}
+		}
+	}
+	return null
+}
+```
+
+> 参考：[关于element-ui的级联选择器，最后一个选项没有选中的问题](https://blog.csdn.net/cheaphotel/article/details/134711511)
 
 ****
 
