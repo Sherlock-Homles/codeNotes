@@ -1498,5 +1498,105 @@ findParentNode(arr, id) {
 
 > 参考：[关于element-ui的级联选择器，最后一个选项没有选中的问题](https://blog.csdn.net/cheaphotel/article/details/134711511)
 
+## 26、阻止事件冒泡
+
+> 当遇到子元素与父元素的事件冲突，就要阻止事件传递的产生， .stop 的作用是阻止事件继续传播，所以在子元素的事件上添加事件修实符 .stop 来阻止事件传播。
+
+```vue
+<div @click.stop>
+    <el-checkbox
+        v-model="list.checked"
+        v-if="
+            list.houseStatus ==
+                0 && chartEdit
+        "
+        @change="
+            listChecked(item)
+        "
+    ></el-checkbox>
+</div>
+```
+
+> 参考：[关于在Vue中如何阻止子元素触发父元素的事件](https://gitcode.csdn.net/66ca0397aa1c2020b35990c3.html?dp_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6ODYwMTM1LCJleHAiOjE3MjkyMTc5NDUsImlhdCI6MTcyODYxMzE0NSwidXNlcm5hbWUiOiJTaGVybG9ja0hvbG1lc18ifQ.5CM9DFQvCufBlWQ4346Rjf6Pl1j_AAGb7W-9vNp7MNE&spm=1001.2101.3001.6650.5&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7Eactivity-5-130226161-blog-137603911.235%5Ev43%5Epc_blog_bottom_relevance_base8&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7Eactivity-5-130226161-blog-137603911.235%5Ev43%5Epc_blog_bottom_relevance_base8&utm_relevant_index=8)
+
+## 27、Element UI upload组件点击查看直接预览大图
+
+**封装图片预览组件**
+
+```vue
+<template>
+    <div>
+        <el-image-viewer
+            v-if="dialogVisible"
+            zIndex="9999"
+            :on-close="closeImgViewer"
+            :url-list="imgList"
+            :initial-index="imgIndex"
+        />
+    </div>
+</template>
+<script>
+import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
+export default {
+    components: {
+        ElImageViewer
+    },
+    data() {
+        return {
+            imgList: [], //当前图片src数组
+            imgIndex: 0, //当前选择的哪张图片
+            dialogVisible: false,
+            uploadListConfig: []
+        }
+    },
+    methods: {
+        /**
+         * @description 关闭图片查看器
+         */
+        closeImgViewer() {
+            this.dialogVisible = false
+        },
+        /**
+         * @description 查看图片，配合on-preview使用
+         * @param {object} file 当前选择文件对象
+         */
+        watchImg(file) {
+            this.dialogImageUrl = file.url
+            this.dialogVisible = true
+            this.imgList = []
+            //获取图片的类从而查找当前界面的图片
+            const dom = document.getElementsByClassName(
+                'el-upload-list__item-thumbnail'
+            )
+            for (let i = 0; i < dom.length; i++) {
+                this.imgList.push(dom[i].src)
+                //当前选择的文件对象如果等于当前界面图片的某项src，就知道当前选择的哪张图片了
+                if (file.url == dom[i].src) {
+                    this.imgIndex = i
+                }
+            }
+        }
+    }
+}
+</script>
+```
+
+**父组件内使用**
+
+```vue
+<ImageDialog ref="imageDialog"></ImageDialog>
+
+<script>
+// 放大图片，el-upload的on-preview钩子函数
+handlePictureCardPreview(file) {
+	this.$refs.imageDialog.watchImg(file)
+},
+</script>
+```
+
+
+
+> 参考：[Element UI upload组件点击查看直接预览大图](https://www.jianshu.com/p/f736c0c5a8d6)
+
 ****
 
