@@ -1594,9 +1594,82 @@ handlePictureCardPreview(file) {
 </script>
 ```
 
-
-
 > 参考：[Element UI upload组件点击查看直接预览大图](https://www.jianshu.com/p/f736c0c5a8d6)
+
+## 28、自定义计数器组件el-input-number
+
+效果图：
+
+![1730772646027](https://github.com/Sherlock-Homles/picx-images-hosting/raw/master/20241105/1730772646027.13lsep8hpt.png)
+
+代码实现：
+
+```vue
+<!-- 组件使用 -->
+<el-input-number
+	id="number_input"
+	class="my-el-input-number"
+	data-unit="m²"
+	v-model="form.garageArea"
+	placeholder="请输入例如100.00"
+	auto-complete="off"
+	min="0.01"
+	max="999.00"
+	:precision="2"
+	:step="1"
+	:controls="false"
+	style="width: 100%"
+	>
+</el-input-number>
+
+<!-- 数据绑定 -->
+<script>
+    export default {
+        data() {
+            return {
+                form: {
+                    garageArea: undefined,
+                }
+            }
+        }
+    }
+</script>
+
+<!-- CSS -->
+<style lang="scss" scoped>
+.my-el-input-number[data-unit] {
+	--el-input-number-unit-offset-x: 35px;
+	position: relative;
+}
+.my-el-input-number[data-unit]::after {
+	content: attr(data-unit);
+	height: 100%;
+	display: flex;
+	align-items: center;
+	position: absolute;
+	top: 0;
+	right: var(--el-input-number-unit-offset-x);
+	color: #999999;
+}
+.my-el-input-number[data-unit] .el-input__inner {
+	padding-left: 30px;
+	padding-right: calc(var(--el-input-number-unit-offset-x) + 12px);
+}
+/deep/ .el-input-number .el-input__inner {
+	text-align: left;
+}
+</style>
+```
+
+> 参考：
+>
+> [el-input-number 如何添加单位](https://blog.csdn.net/weixin_42289279/article/details/131183025)
+>
+> [Element-UI 修改el-input-number计数器对齐方式](https://blog.csdn.net/xiaohuihui1400/article/details/131537171)
+>
+> [elementUI el-input-number默认显示placeholder](https://blog.csdn.net/m0_47005349/article/details/118545499)
+
+
 
 ****
 
