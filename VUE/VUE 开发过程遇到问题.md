@@ -1669,6 +1669,36 @@ handlePictureCardPreview(file) {
 >
 > [elementUI el-input-number默认显示placeholder](https://blog.csdn.net/m0_47005349/article/details/118545499)
 
+## 29、this.$router.back返回上一页带参数，上一页面接收参数做出判断
+
+子组件：
+
+```vue
+this.$route.params.tabIndex = this.tabIndex
+this.$router.back()
+```
+
+父组件：
+
+```vue
+data() {
+        return {
+                tabIndex: 0
+        }
+},
+
+beforeRouteEnter(to, from, next) {
+        next(vm => {
+                // 使用回调函数修改组件的状态,vm代替this
+                vm.tabIndex = from.params.hasOwnProperty('tabIndex') ? Number(from.params.tabIndex) : 0
+         })
+},
+```
+
+> 参考：[this.$router.back返回上一页带参数，上一页面接收参数做出判断](https://blog.csdn.net/Guoyu1_/article/details/132405942)
+
+
+
 
 
 ****
