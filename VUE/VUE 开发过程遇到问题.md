@@ -1697,7 +1697,96 @@ beforeRouteEnter(to, from, next) {
 
 > 参考：[this.$router.back返回上一页带参数，上一页面接收参数做出判断](https://blog.csdn.net/Guoyu1_/article/details/132405942)
 
+## 30、uni-app实现页面自定义回到顶部按钮功能
 
+![1735183907022](https://github.com/Sherlock-Homles/picx-images-hosting/raw/master/20241226/1735183907022.4xulym3a1b.png)
+
+```vue
+<template>
+  <view class="page action-page">
+    <!-- 滚动区域 -->
+    <scroll-view
+      class="list"
+      scroll-y="true"
+      :scroll-top="scrollTop"
+      @scroll="handleScroll"
+    >
+    </scroll-view>
+    <!-- 回到顶部按钮 -->
+    <view class="upward" v-if="isShow" @click="totop">
+      <u-icon name="arrow-upward" color="#fff" size="28"></u-icon>
+    </view>
+  </view>
+</template>
+
+<script>
+export default {
+  components: {},
+  data() {
+    return {
+      isShow: false,
+      scrollTop: 0,
+      oldScrollTop: 0,
+    }
+  },
+  methods: {
+    // 监听某个特定组件（如scroll-view）的滚动事件
+    handleScroll(e) {
+      if (e.detail.scrollTop > 10) {
+        this.isShow = true
+      } else {
+        this.isShow = false
+      }
+      this.oldScrollTop = e.detail.scrollTop
+    },
+    // scroll-view 回到顶部事件
+    totop() {
+      this.scrollTop = this.oldScrollTop
+      this.$nextTick(() => {
+        this.scrollTop = 0
+      })
+    },
+  },
+}
+</script>
+
+<style lang="scss" scoped>
+.action-page {
+  position: relative;
+  overflow: hidden;
+  height: 99vh;
+
+  .list {
+    margin: 26rpx;
+    margin-top: 26rpx;
+    height: 55vh;
+    width: 93%;
+  }
+
+  .upward {
+    position: fixed;
+    right: 10rpx;
+    bottom: 180rpx;
+    width: 80rpx;
+    height: 80rpx;
+    background-color: #297cfc;
+    color: #fff;
+    flex: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+  }
+}
+</style>
+```
+
+> 参考：
+>
+> [uniapp如何监听页面滚动？](https://blog.csdn.net/zhang20040217/article/details/140761215)
+>
+> [uniapp scroll-view 回到顶部](https://blog.csdn.net/qq_37363320/article/details/120507386)
 
 
 
