@@ -1788,6 +1788,343 @@ export default {
 >
 > [uniapp scroll-view 回到顶部](https://blog.csdn.net/qq_37363320/article/details/120507386)
 
+## 31、VUE中使用zTree组件
+
+![1736321028629](https://github.com/Sherlock-Homles/picx-images-hosting/raw/master/20250108/1736321028629.6m3zeltxw4.png)
+
+> 组件代码``zTree.vue``
+
+```vue
+<template>
+    <div id="areaTree" class="z-tree">
+        <el-container style="height: 100%">
+            <el-header style="height: auto; padding: 10px">
+                <div class="search-input" v-if="searchEnable">
+                    <el-input
+                        :placeholder="searchPlaceholder"
+                        size="mini"
+                        style="width: 100%"
+                        v-model="searchInput"
+                        @keyup.enter.native="treeSearch"
+                    >
+                        <i
+                            slot="suffix"
+                            class="el-input__icon el-icon-search"
+                            @click.stop="treeSearch"
+                        ></i>
+                    </el-input>
+                </div>
+            </el-header>
+            <el-main style="padding: 0 5px; height: calc(100% - 42px)">
+                <div class="tree-box">
+                    <div class="zTreeDemoBackground left">
+                        <ul :id="'treeDemo' + name" class="ztree"></ul>
+                    </div>
+                </div>
+            </el-main>
+        </el-container>
+    </div>
+</template>
+<script>
+import '../../../static/util/ztree/jquery-1.4.4.min'
+import '../../../static/util/ztree/jquery.ztree.all.min'
+export default {
+    name: 'zTree',
+    components: {},
+    props: {
+        zNodes: {
+            type: Array,
+            default: () => []
+        },
+        simpleCheck: {
+            type: Boolean,
+            default: false
+        },
+        checkEnable: {
+            type: Boolean,
+            default: false
+        },
+        defaultSelectOne: {
+            type: Boolean,
+            default: false
+        },
+        searchEnable: {
+            type: Boolean,
+            default: false
+        },
+        searchPlaceholder: {
+            type: String,
+            default: '请输入查找'
+        },
+        expandAll: {
+            type: Boolean,
+            default: true
+        }
+    },
+    data: function() {
+        return {
+            searchInput: '',
+            noCheck: {
+                enable: false
+            },
+            name: '',
+            treeNode: undefined,
+            check: {
+                enable: true,
+                nocheckInherit: true,
+                chkboxType: { Y: 'ps', N: 'ps' }
+            },
+            checkSimple: {
+                enable: true,
+                nocheckInherit: false,
+                chkboxType: { Y: 'ps', N: 'ps' },
+                chkStyle: 'radio',
+                radioType: 'all'
+            },
+            data: {
+                simpleData: {
+                    enable: true
+                }
+            },
+            callback: {
+                beforeClick: this.beforeClick,
+                onClick: this.zTreeOnClick,
+                onCheck: this.zTreeOnCheck
+            },
+            callbackNoCheck: {
+                onClick: this.zTreeOnClick
+            }
+        }
+    },
+    methods: {
+        zTreeOnClick: function(event, treeId, treeNode) {
+            this.$emit(
+                'tree-click',
+                event,
+                treeNode.id,
+                treeNode,
+                treeNode.getPath()
+            )
+        },
+        zTreeOnCheck: function(event, treeId, treeNode) {
+            var zTree = this.treeNode
+            // var zTree = $.fn.zTree.getZTreeObj("treeDemo"+this.name)
+
+            const checkedNames = []
+            const checkedIds = []
+            for (var i = 0; i <= zTree.getCheckedNodes(true).length - 1; i++) {
+                checkedIds.push(zTree.getCheckedNodes(true)[i].id)
+                checkedNames.push(zTree.getCheckedNodes(true)[i].name)
+            }
+            this.$emit(
+                'tree-check',
+                event,
+                checkedIds,
+                zTree.getCheckedNodes(true)
+            )
+        },
+        beforeClick: function(treeId, treeNode) {
+            var zTree = this.treeNode
+            // var zTree = $.fn.zTree.getZTreeObj("treeDemo"+this.name);
+            // zTree.checkNode(treeNode, !treeNode.checked, null, true);
+            zTree.checkNode(treeNode, !treeNode.checked, true, true) //第二个参数!treeNode.checked和"",省略此参数效果等同，则根据对此节点的勾选状态进行 toggle 切换，第三个参数设置为true时候进行父子节点的勾选联动操作 ，第四个参数true 表示执行此方法时触发 beforeCheck & onCheck 事件回调函数；false 表示执行此方法时不触发事件回调函数
+            return false
+        },
+        initTree: function() {
+            const setting = {
+                check: this.check,
+                data: this.data,
+                callback: this.callback
+            }
+            const settingSimple = {
+                check: this.checkSimple,
+                data: this.data,
+                callback: this.callback
+            }
+            const settingNoCheck = {
+                check: this.noCheck,
+                data: this.data,
+                callback: this.callbackNoCheck
+            }
+
+            if (this.checkEnable) {
+                if (this.simpleCheck) {
+                    $.fn.zTree
+                        .init(
+                            $('#treeDemo' + this.name),
+                            settingSimple,
+                            this.zNodes
+                        )
+                        .expandAll(this.expandAll)
+                } else {
+                    $.fn.zTree
+                        .init($('#treeDemo' + this.name), setting, this.zNodes)
+                        .expandAll(this.expandAll)
+                }
+            } else {
+                $.fn.zTree
+                    .init(
+                        $('#treeDemo' + this.name),
+                        settingNoCheck,
+                        this.zNodes
+                    )
+                    .expandAll(this.expandAll)
+
+                if (this.defaultSelectOne) {
+                    const zTree = $.fn.zTree.getZTreeObj('treeDemo' + this.name)
+                    const nodes = zTree.getNodes()
+                    if (nodes.length > 0) {
+                        zTree.selectNode(nodes[0])
+                    }
+                }
+            }
+
+            this.treeNode = $.fn.zTree.getZTreeObj('treeDemo' + this.name)
+        },
+        treeSearch: function() {
+            const searchName = this.searchInput
+            var node = this.treeNode.getNodesByFilter(function(node) {
+                return node.name.indexOf(searchName) !== -1
+            }, true)
+            if (this.checkEnable) {
+                this.treeNode.checkNode(node, true, true)
+                this.$emit('tree-search', this.treeNode.getCheckedNodes(true))
+            } else {
+                this.treeNode.selectNode(node)
+                this.$emit('tree-search', node)
+            }
+        },
+        treeAddNodes: function(parent, newNodes) {
+            const parentNode = this.treeNode.getNodesByParam(
+                'name',
+                parent.name,
+                null
+            )
+            this.treeNode.addNodes(parentNode, newNodes)
+        },
+        treeRemoveNode: function(node) {
+            const removeNode = this.treeNode.getNodesByParam(
+                'name',
+                node.name,
+                null
+            )
+            this.treeNode.removeNode(removeNode)
+        },
+        selectNodeById: function(params) {
+            const selectNode = this.treeNode.getNodesByParam('id', params, null)
+            this.treeNode.selectNode(selectNode[0])
+        }
+    },
+    mounted() {
+        this.initTree()
+        this.name = new Date().getTime()
+    },
+    watch: {
+        zNodes: function() {
+            this.initTree()
+        },
+        checkEnable: function() {
+            this.initTree()
+        },
+        simpleCheck: function() {
+            this.initTree()
+        }
+        // '$route':function () {
+        //   this.initTree()
+        // }
+    }
+}
+</script>
+<style lang="scss" scoped>
+#areaTree {
+    border: 1px solid #e5e5e5;
+    margin-bottom: 2px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+.search-input {
+    /*margin: 5px;*/
+    font-size: 16px;
+}
+</style>
+```
+
+> 使用
+
+```vue
+<template>
+  <div style="display: flex">
+    <!-- 组件 -->
+    <z-tree
+      ref="zTree"
+      :zNodes="treeData"
+      :checkEnable="false"
+      :simple-check="false"
+      :default-select-one="true"
+      :search-enable="true"
+      :expand-all="false"
+      search-placeholder="搜索"
+      @tree-click="handleNodeClick"
+      @tree-search="zTreeOnSearch"
+      style="height: 99%; border: none"
+    ></z-tree>
+  </div>
+</template>
+
+<script>
+import zTree from '@/components/common/zTree'
+export default {
+  data() {
+    return {
+      treeData: [],
+      deptIds: '',
+    }
+  },
+  components: { zTree },
+  created() {
+    this.getDeptTree()
+  },
+  watch: {},
+  methods: {
+    // 搜索
+    zTreeOnSearch(node) {
+      this.handleNodeClick('', '', node)
+    },
+    // 树节点点击
+    handleNodeClick(event, treeId, treeNode) {
+      this.deptId = treeNode.id
+      const arr = []
+      arr.push(treeNode)
+      this.deptIds = treeNode.id
+    },
+    // 默认展开第一个节点
+    defaultNode() {
+      // 通过id获取当前节点  展开当前节点的时候需要将他上级全部展开
+      const nodes = this.$refs.zTree.treeNode.getNodeByParam(
+        'id',
+        this.treeData[0].children[2].id,
+        null
+      )
+      // 展开节点
+      this.$refs.zTree.treeNode.expandNode(nodes.getParentNode(), true)
+    },
+    // 获取树形数据
+    getDeptTree() {
+      const params = {
+        projectId: this.project.projectId,
+      }
+      getFirstSecondLevelTreeNew(params).then((response) => {
+        this.treeData = response.data.data
+        setTimeout(() => {
+          this.defaultNode()
+        }, 200)
+      })
+    },
+  },
+}
+</script>
+```
+
 
 
 ****
