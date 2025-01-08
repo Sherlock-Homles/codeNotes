@@ -2125,6 +2125,34 @@ export default {
 </script>
 ```
 
+## 32、多层级树形结构递归遍历
+
+> 业务要求：树形结构默认展开第一个节点的最底层子节点
+
+![1736325599201](https://github.com/Sherlock-Homles/picx-images-hosting/raw/master/20250108/1736325599201.86tqe5gvjx.webp)
+
+```vue
+<el-tree
+  ref="tree"
+  node-key="code"
+  :data="treeData"
+  :default-expanded-keys="topLevelNodes"
+></el-tree>
+
+<script>
+this.treeData[0].children = res.data.data
+this.topLevelNodes.push(this.getLastNode(this.treeData[0].children[0]))
+// 递归遍历
+getLastNode(node) {
+  if (node.children && node.children.length > 0) {
+    return this.getLastNode(node.children[0])
+  } else {
+    return node.code
+  }
+}
+</script>
+```
+
 
 
 ****
