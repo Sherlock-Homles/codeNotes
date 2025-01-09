@@ -2153,7 +2153,113 @@ getLastNode(node) {
 </script>
 ```
 
+## 33、Uni-app图片压缩
 
+```javascript
+// 图片压缩方法
+compressPhoto(imagePath) {
+  const maxSize = 200 * 1024; // 设置最大文件大小为 200KB
+  const step = 10; // 每次迭代减少的压缩质量值
+  let quality = 80; // 初始压缩质量为80
+
+  return new Promise((resolve, reject) => {
+    function compress() {
+      uni.compressImage({
+        src: imagePath,
+        quality: quality,
+        success: function (res) {
+          const compressedImagePath = res.tempFilePath;
+
+          uni.getFileInfo({
+            filePath: compressedImagePath,
+            success: function (res) {
+              const fileSize = res.size;
+
+              if (fileSize <= maxSize || quality <= 0) {
+                // 图片大小符合要求，返回压缩后的图片路径
+                resolve(compressedImagePath);
+              } else {
+                // 继续迭代压缩图片大小
+                quality -= step;
+                retry();
+              }
+            },
+            fail: function (err) {
+              // 获取文件信息失败，返回错误信息
+              reject(err);
+            }
+          });
+        },
+        fail: function (err) {
+          // 压缩图片失败，返回错误信息
+          reject(err);
+        }
+      });
+    }
+
+    function retry() {
+      if (quality > 0) {
+        compress();
+      } else {
+        reject(new Error('压缩图片失败'));
+      }
+    }
+
+    retry();
+  });
+},
+// 获取图片大小
+getFileSize(filePath) {
+  return new Promise((resolve, reject) => {
+    uni.getFileInfo({
+      filePath: filePath,
+      success: function (res) {
+        const fileSize = res.size;
+        resolve(fileSize);
+      },
+      fail: function (err) {
+        reject(err);
+      }
+    });
+  });
+},
+// 选择图片
+chooseImg() {
+  chooseImage({
+    count: 1,
+    sizeType: ['original', 'compressed'],
+    sourceType: [this.sourceType]
+  })
+    .then(async (res) => {
+      if (
+        res.tempFiles[0].size > this.$store.getters.config.imgUploadMaxSize
+      ) {
+        this.$modal.msg('图片大小不能超过10M')
+        return Promise.reject()
+      }
+      // 调用图片压缩
+      let filePath = await this.compressPhoto(res.tempFilePaths[0])
+      return uploadFile({
+        filePath,
+        name: 'file'
+      })
+    })
+    .then(res => {
+      const url = res[0].attPath
+      // console.log(url)
+      return realAuthApiNew({
+        userId: this.$store.getters.userInfo.userId,
+        facialRecognitionFile: url
+      })
+    })
+    .then(() => {
+      this.$modal.msgSuccess('提交成功')
+      return this.GetUserInfo() // 重新拉取用户信息
+    })
+}
+```
+
+> 参考：[uniapp上传图片到服务器前压缩](https://blog.csdn.net/weixin_45389051/article/details/136623696)
 
 ****
 
