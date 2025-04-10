@@ -164,7 +164,7 @@ Diff算法通过比较两个对象（如两个文本文件、两个虚拟DOM树�
 - Vite 在开发阶段使用原生 ES 模块加载方式，跳过了打包操作，因此提供了更快的冷启动和即时的热模块更新。
 - Vite 在构建阶段使用 Rollup 进行打包，以优化应用体积和性能。
 
-## TypeScript
+## 二、TypeScript
 
 ### 1. TypeScript与JavaScript的区别是什么？
 
